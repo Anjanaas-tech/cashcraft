@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to CashCraft</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: white;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("{% static 'images/home.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        nav {
+            background: #343a40;
+            color: white;
+            padding: 15px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 1.8em;
+            color: #f8f9fa;
+        }
+
+        .logo small {
+            font-size: 0.5em;
+            display: block;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #007bff;
+        }
+
+        header {
+            text-align: center;
+            padding: 200px 20px;
+            color: white;
+        }
+
+        .features {
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .features h2 {
+            font-size: 2.5em;
+            color: #007bff;
+            margin-bottom: 40px;
+        }
+
+        .features-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 1x4 grid */
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            color: #343a40;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card i {
+            font-size: 3em;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+
+        .feature-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5em;
+            color: #007bff;
+        }
+
+        .overview {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .overview h2 {
+            font-size: 2.5em;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .overview p {
+            font-size: 1.2em;
+            color: white;
+            line-height: 1.8;
+        }
+
+        footer {
+            background: #343a40;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            CashCraft
+            <small>Your Personal Budget Tracker</small>
+        </div>
+        <div>
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#about">About</a>
+            <a href="{% url 'login' %}">Log In</a>
+            <a href="{% url 'register' %}">Sign Up</a><&nbsp>
+        </div>
+    </nav>
+
+    <header id="home">
+        <h1 style="font-size: 4em; font-weight: bold;">Welcome to CashCraft</h1>
+        <p style="font-size: 1.5em; margin-top: 20px;"> CashCraft simplifies personal finance management with intuitive tools to track expenses, manage income, and stay on budget. Achieve financial goals with visual dashboards and tailored insights. Secure and user-friendly, CashCraft empowers you to save, invest, and take control of your finances effortlessly. Your journey to financial freedom starts here! </p>
+    </header>
+
+    <section id="features" class="features">
+        <h2>Features</h2>
+        <div class="features-container">
+            <div class="feature-card">
+                <i class="fas fa-wallet"></i>
+                <h3>Expense Tracking</h3>
+                <p>Easily log and categorize your expenses to stay on budget.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-hand-holding-usd"></i>
+                <h3>Income Management</h3>
+                <p>Track your income sources and manage them effectively.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-bullseye"></i>
+                <h3>Budget Goals</h3>
+                <p>Set, track, and achieve your financial goals seamlessly.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>Visual Dashboards</h3>
+                <p>Gain insights into your finances with visual reports.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="overview">
+        <h2>About CashCraft</h2>
+        <p>
+            CashCraft is a comprehensive budgeting and expense-tracking tool designed to empower users to take control of their finances. 
+            Whether you're managing daily expenses or planning for long-term financial goals, CashCraft provides the tools and insights needed 
+            for smarter decision-making.
+        </p>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 CashCraft. All rights reserved.</p>
+    </footer>
+</body>
+</html>

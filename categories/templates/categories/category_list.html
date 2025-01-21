@@ -1,0 +1,21 @@
+<h1>Categories</h1>
+<h2>Global Categories</h2>
+<ul>
+    {% for category in global_categories %}
+        <li>{{ category.name }}: {{ category.description }}</li>
+    {% endfor %}
+</ul>
+
+<h2>Your Categories</h2>
+<ul>
+    {% for category in user_categories %}
+        <li>{{ category.name }}: {{ category.description }}</li>
+    {% endfor %}
+</ul>
+
+<h3>Create Your Own Category</h3>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Category</button>
+</form>

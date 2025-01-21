@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Goals</h2>
+<a href="{% url 'goals:create' %}" class="btn btn-primary">Create Goal</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Target Amount</th>
+            <th>Target Date</th>
+            <th>Progress</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for goal in goals %}
+        <tr>
+            <td>{{ goal.name }}</td>
+            <td>${{ goal.target_amount }}</td>
+            <td>{{ goal.target_date }}</td>
+            <td>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: {{ goal.calculate_progress }}%;" 
+                         aria-valuenow="{{ goal.calculate_progress }}" aria-valuemin="0" aria-valuemax="100">
+                        {{ goal.calculate_progress|floatformat:1 }}%
+                    </div>
+                </div>
+            </td>
+            <td>
+                <a href="{% url 'goals:update' goal.id %}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{% url 'goals:delete' goal.id %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No goals found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

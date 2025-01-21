@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #00021E;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .dashboard-container {
+            max-width: 900px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2, h3, h4 {
+            color: #4a90e2;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .financial-overview {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .financial-card {
+            background-color: #f4f7fa;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            flex: 1;
+            margin-right: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .financial-card:last-child {
+            margin-right: 0;
+        }
+
+        .financial-card h4 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .financial-card p {
+            font-size: 24px;
+            color: #28a745;
+        }
+
+        .balance-card p {
+            color: #e67e22;
+        }
+
+        .btn-action {
+            display: inline-block;
+            padding: 10px 15px;
+            margin: 5px;
+            background-color: #4a90e2;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .btn-action:hover {
+            background-color: #357abd;
+        }
+        
+        canvas {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <h2>Welcome, {{ user_profile.username }}!</h2>
+
+        <!-- Profile Section -->
+        <div class="section user-profile">
+            <h3>User Profile</h3>
+            <p><strong>Email:</strong> {{ user_profile.email }}</p>
+            <p><strong>Date Joined:</strong> {{ user_profile.date_joined|date:"F d, Y" }}</p>
+            <a href="{% url 'edit_profile' %}" class="btn-action">Edit Profile</a>
+        </div>
+
+        <!-- Financial Overview Section -->
+        <div class="section financial-overview">
+            <div class="financial-card">
+                <h4>Total Income</h4>
+                <p>₹{{ total_income }}</p>
+            </div>
+            <div class="financial-card">
+                <h4>Total Expense</h4>
+                <p>₹{{ total_expenses }}</p>
+            </div>
+            <div class="financial-card balance-card">
+                <h4>Current Balance</h4>
+                <p>₹{{ balance }}</p>
+            </div>
+        </div>
+
+        <!-- Goal Progress Chart Section -->
+        <div class="section goal-progress">
+            <h3>Goal Progress</h3>
+            <canvas id="goalChart" width="400" height="200"></canvas>
+            <script>
+                const ctx = document.getElementById('goalChart').getContext('2d');
+                const goalData = {
+                    labels: [{% for goal in goal_progress %}'{{ goal.goal_name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+                    datasets: [{
+                        label: 'Progress (%)',
+                        data: [{% for goal in goal_progress %}{{ goal.progress }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                };
+
+                const goalChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: goalData,
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            </script>
+        </div>
+
+        <!-- Add buttons for quick actions -->
+        <div class="section actions">
+            <a href="{% url 'add_income' %}" class="btn-action">Add Income</a>
+            <a href="{% url 'add_expense' %}" class="btn-action">Add Expense</a>
+            
+        </div>
+    </div>
+
+</body>
+</html>

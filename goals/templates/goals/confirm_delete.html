@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .progress {
+        background-color: #e9ecef;
+        border-radius: 5px;
+        overflow: hidden;
+        height: 20px;
+        width: 100%;
+    }
+    
+    .progress-bar {
+        background-color: #28a745;
+        height: 100%;
+        text-align: center;
+        color: #fff;
+        line-height: 20px;
+    }
+</style>    
+<h2>Delete Goal</h2>
+<p>Are you sure you want to delete "{{ object.name }}"?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Yes, delete</button>
+    <a href="{% url 'goals:list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
