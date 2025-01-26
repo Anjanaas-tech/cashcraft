@@ -1,47 +1,91 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Sign Up</title>
     <style>
-        /* General styling */
+        /* General Styling */
         body {
             font-family: 'Arial', sans-serif;
-            background: url('home.jpg') no-repeat center center fixed;
-            background-size: cover;
             margin: 0;
             padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url("{% static 'images/register.jpg' %}") no-repeat center center/cover;
+        }
+    
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Optional dark overlay */
+            backdrop-filter: blur(8px); /* Apply the blur effect */
+            z-index: -1;
+        }
+    
+        .container {
+            display: flex;
+            width: 80%;
+            height: 80%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            background: white; /* Ensure content has a solid background */
+        }
+    
+        /* Left Panel Styling */
+        .left-panel {
+            flex: 1;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("{% static 'images/register.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
             color: white;
         }
-
-        h1 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-top: 20px;
-            color:rgb(0, 0, 0);
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    
+        .left-panel h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
         }
-
-        /* Form container styling */
+    
+        .left-panel p {
+            font-size: 0.9rem;
+        }
+    
+        /* Right Panel (Form) Styling */
         .form-container {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            width: 350px;
-            margin: 50px auto;
+            flex: 1;
+            background: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
-
-        /* Form field styling */
+    
+        .form-container h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #333;
+        }
+    
         label {
             font-weight: bold;
             font-size: 0.9rem;
             margin-bottom: 5px;
             display: block;
-            color: #333;
+            color: #555;
         }
-
+    
         input[type="text"], input[type="password"], input[type="email"] {
             width: 100%;
             padding: 12px;
@@ -50,16 +94,15 @@
             border-radius: 8px;
             font-size: 0.9rem;
         }
-
+    
         input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus {
             outline: none;
             border-color: #007bff;
             box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
         }
-
-        /* Button styling */
+    
         button {
-            background-color: #007bff;
+            background-color: #6a5acd;
             color: white;
             border: none;
             padding: 12px;
@@ -69,107 +112,103 @@
             width: 100%;
             transition: background-color 0.3s;
         }
-
+    
         button:hover {
-            background-color: #0056b3;
+            background-color: #483d8b;
         }
-
-        /* Alert styling */
-        .alert {
-            margin-bottom: 20px;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            text-align: center;
-        }
-
-        .alert-success {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .alert-error {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        .close {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            color: white;
-        }
-
-        /* Link styling */
+    
         p {
             text-align: center;
             font-size: 0.9rem;
         }
-
+    
         a {
-            color: #007bff;
+            color: #6a5acd;
             text-decoration: none;
             font-weight: bold;
         }
-
+    
         a:hover {
             text-decoration: underline;
         }
-
-        /* Responsive Design */
-        @media (max-width: 400px) {
-            .form-container {
-                width: 90%;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-        }
     </style>
+    
 </head>
 <body>
-    <h1>Register</h1>
-    
-    {% if messages %}
     <div class="container">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-                {{ message }}
-                <span class="close" onclick="this.parentElement.style.display='none';">&times;</span>
-            </div>
-        {% endfor %}
-    </div>
-    {% endif %}
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <h1>Sign Up</h1>
+            <p>Privacy policy & Terms of service</p>
+        </div>
 
-    <div class="form-container">
-        <form method="post" action="{% url 'register' %}">
-            {% csrf_token %}
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" placeholder="What's your secret superhero name?" required>
-            
-            <label for="fname">First Name (No Nicknames!)</label>
-            <input type="text" id="fname" name="fname" placeholder="Your official first name here" required>
-            
-            <label for="lname">Last Name (Yes, the one on your ID)</label>
-            <input type="text" id="lname" name="lname" placeholder="Your proud family name" required>
-            
-            <label for="email">Email (We promise no spam!)</label>
-            <input type="email" id="email" name="email" placeholder="Enter your most professional email" required>
-            
-            <label for="pass1">Password (Keep it super secret)</label>
-            <input type="password" id="pass1" name="password1" placeholder="Your secret code" required>
-            
-            <label for="pass2">Confirm Password (Double-check time!)</label>
-            <input type="password" id="pass2" name="password2" placeholder="Type it again, just to be sure" required>
-            
-            <button type="submit">Join the Club</button>
-        </form>
-        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+        <!-- Right Panel (Form) -->
+        <div class="form-container">
+            <h2>Create an Account</h2>
+            <form method="post" action="{% url 'register' %}">
+                {% csrf_token %}
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                
+                <label for="password1">Password</label>
+                <input type="password" id="password1" name="password1" placeholder="Enter your password" required>
+                
+                <label for="password2">Confirm Password</label>
+                <input type="password" id="password2" name="password2" placeholder="Confirm your password" required>
+                
+                <button type="submit">Register</button>
+            </form>
+            <p>Already have an account? <a href="{% url 'login' %}">Sign In</a></p>
+        </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.querySelector("form");
+            const username = document.getElementById("username");
+            const email = document.getElementById("email");
+            const password1 = document.getElementById("password1");
+            const password2 = document.getElementById("password2");
+    
+            form.addEventListener("submit", (e) => {
+                let isValid = true;
+                let message = "";
+    
+                // Validate username
+                if (username.value.trim() === "") {
+                    isValid = false;
+                    message = "Username is required.";
+                } else if (username.value.length < 3) {
+                    isValid = false;
+                    message = "Username must be at least 3 characters.";
+                }
+    
+                // Validate email
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(email.value)) {
+                    isValid = false;
+                    message = "Please enter a valid email address.";
+                }
+    
+                // Validate passwords
+                if (password1.value.length < 8) {
+                    isValid = false;
+                    message = "Password must be at least 8 characters.";
+                } else if (password1.value !== password2.value) {
+                    isValid = false;
+                    message = "Passwords do not match.";
+                }
+    
+                if (!isValid) {
+                    e.preventDefault();
+                    alert(message);
+                }
+            });
+        });
+    </script>
+    
 </body>
 </html>

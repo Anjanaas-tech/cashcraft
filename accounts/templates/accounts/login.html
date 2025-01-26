@@ -1,160 +1,172 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>CashCraft - Login</title>
     <style>
-        /* General styling */
         body {
             font-family: 'Arial', sans-serif;
-            background: url('home.jpg') no-repeat center center fixed;
-            background-size: cover;
             margin: 0;
             padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: url("{% static 'images/login.jpg' %}") no-repeat center center/cover;
             color: white;
         }
 
-        h1 {
-            text-align: center;
+        .container {
+            display: flex;
+            max-width: 900px;
+            width: 90%;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .welcome-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("{% static 'images/login.jpg' %}") no-repeat center center/cover;
+            backdrop-filter: blur(8px);
+            padding: 40px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+
+        .welcome-section h1 {
             font-size: 2.5rem;
-            margin-top: 20px;
-            color: #ffffff;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
         }
 
-        /* Form container styling */
-        form {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            width: 350px;
-            margin: 50px auto;
+        .welcome-section p {
+            font-size: 1rem;
+            line-height: 1.5;
+            opacity: 0.9;
         }
 
-        label {
-            font-weight: bold;
+        .form-section {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-section h2 {
+            color: #1e3a8a;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
             font-size: 0.9rem;
-            margin-bottom: 5px;
-            display: block;
             color: #333;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
         }
 
-        input[type="text"], input[type="password"] {
+        .form-group input {
             width: 100%;
             padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
             border-radius: 8px;
             font-size: 0.9rem;
         }
 
-        input:focus {
+        .form-group input:focus {
             outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            border-color: #3b82f6;
+            box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
         }
 
-        /* Button styling */
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .form-footer a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
         button {
-            background-color: #007bff;
+            width: 100%;
+            background-color: #3b82f6;
             color: white;
             border: none;
             padding: 12px;
             border-radius: 8px;
             cursor: pointer;
             font-size: 1rem;
-            width: 100%;
             transition: background-color 0.3s;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #2563eb;
         }
 
-        /* Alert styling */
-        .alert {
-            margin: 10px auto;
-            width: 90%;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            text-align: center;
-        }
-
-        .alert-success {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .alert-error {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        .alert-dismissible .close {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: white;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        /* Link styling */
-        p {
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
-        a {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 400px) {
-            form {
-                width: 90%;
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
             }
 
-            h1 {
-                font-size: 2rem;
+            .welcome-section {
+                text-align: center;
+                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
-    {% if messages %}
     <div class="container">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible">
-                {{ message }}
-                <span class="close" onclick="this.parentElement.style.display='none';">&times;</span>
-            </div>
-        {% endfor %}
-    </div>
-    {% endif %}
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1>Welcome Back</h1>
+            <p>Manage your finances smarter with CashCraft. Track your expenses, set budgets, and achieve your financial goals.</p>
+        </div>
 
-    <h1>Welcome Back!</h1>
-    <form method="post" action="{% url 'login' %}">
-        {% csrf_token %}
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" placeholder="What's your superhero alias?" required>
-        
-        <label for="password">Password (No Peeking!)</label>
-        <input type="password" id="password" name="password" placeholder="Enter your top-secret password" required>
-        
-        <button type="submit">Login Now</button>
-    </form>
-    <p>Don’t have an account? <a href="{% url 'register' %}">Register here</a></p>
+        <!-- Form Section -->
+        <div class="form-section">
+            <h2>Login Account</h2>
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Email ID</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit">Login</button>
+            </form>
+            <div class="form-footer">
+                <p>
+                    <input type="checkbox" id="keep_signed" name="keep_signed">
+                    <label for="keep_signed" style="color: black;">Keep me signed in</label>
+                </p>
+                <p>Don’t have an account? <a href="{% url 'register' %}">Register here</a></p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
