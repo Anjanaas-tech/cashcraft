@@ -40,16 +40,19 @@ def dashboard(request):
         'user_expenses': user_expenses,  # Pass user_expenses to template
     })
 
+@login_required
 def add_income(request):
     if request.method == "POST":
         amount = request.POST.get('amount')
+        source = request.POST.get('source')  # Get source from the form
         description = request.POST.get('description')
         date = request.POST.get('date')
 
         # Validate the input and save
-        if amount and description and date:
+        if amount and source and description and date:
             Income.objects.create(
                 amount=amount,
+                source=source,  # Save the source
                 description=description,
                 date=date,
                 user=request.user  # Assuming you have a user field

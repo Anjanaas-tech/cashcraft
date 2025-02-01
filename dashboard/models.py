@@ -4,7 +4,8 @@ from accounts.models import User  # Import your custom User model
 class Income(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='incomes', default=1)  # Foreign key to User
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    source = models.CharField(max_length=255)
+    source = models.CharField(max_length=255)  # Adding the source field
+    description = models.TextField(default="No description")
     date = models.DateField()
 
     def __str__(self):
