@@ -3,101 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Financial Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #00021E;
-            color: #333;
+            font-family: 'Poppins', sans-serif;
+            background-color: #1E1E2F;
+            color: #fff;
             margin: 0;
             padding: 0;
         }
-
         .dashboard-container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 50px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #25273D;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-
         h2, h3, h4 {
-            color: #4a90e2;
+            color: #50BFE6;
         }
-
         .section {
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
-
         .financial-overview {
             display: flex;
             justify-content: space-between;
+            gap: 20px;
         }
-
         .financial-card {
-            background-color: #f4f7fa;
-            border-radius: 8px;
+            background-color: #323552;
+            border-radius: 10px;
             padding: 20px;
             text-align: center;
             flex: 1;
-            margin-right: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-
-        .financial-card:last-child {
-            margin-right: 0;
-        }
-
         .financial-card h4 {
             margin-bottom: 10px;
             font-size: 18px;
         }
-
         .financial-card p {
             font-size: 24px;
-            color: #28a745;
+            color: #50BFE6;
         }
-
-        .balance-card p {
-            color: #e67e22;
-        }
-
         .btn-action {
             display: inline-block;
-            padding: 10px 15px;
-            margin: 5px;
-            background-color: #4a90e2;
+            padding: 12px 18px;
+            margin: 8px;
+            background-color: #50BFE6;
             color: white;
             text-decoration: none;
-            border-radius: 5px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: 0.3s;
         }
-
         .btn-action:hover {
-            background-color: #357abd;
+            background-color: #3a9fcf;
         }
-        
-        canvas {
-            margin-top: 30px;
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .chart-box {
+            background-color: #323552;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
 <body>
-
     <div class="dashboard-container">
         <h2>Welcome, {{ user_profile.username }}!</h2>
-
-        <!-- Profile Section -->
-        <div class="section user-profile">
-            <h3>User Profile</h3>
-            <p><strong>Email:</strong> {{ user_profile.email }}</p>
-            <p><strong>Date Joined:</strong> {{ user_profile.date_joined|date:"F d, Y" }}</p>
-            <a href="{% url 'edit_profile' %}" class="btn-action">Edit Profile</a>
-        </div>
-
-        <!-- Financial Overview Section -->
         <div class="section financial-overview">
             <div class="financial-card">
                 <h4>Total Income</h4>
@@ -107,50 +88,90 @@
                 <h4>Total Expense</h4>
                 <p>₹{{ total_expenses }}</p>
             </div>
-            <div class="financial-card balance-card">
+            <div class="financial-card">
                 <h4>Current Balance</h4>
                 <p>₹{{ balance }}</p>
             </div>
         </div>
-
-        <!-- Goal Progress Chart Section -->
-        <div class="section goal-progress">
-            <h3>Goal Progress</h3>
-            <canvas id="goalChart" width="400" height="200"></canvas>
-            <script>
-                const ctx = document.getElementById('goalChart').getContext('2d');
-                const goalData = {
-                    labels: [{% for goal in goal_progress %}'{{ goal.goal_name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
-                    datasets: [{
-                        label: 'Progress (%)',
-                        data: [{% for goal in goal_progress %}{{ goal.progress }}{% if not forloop.last %}, {% endif %}{% endfor %}],
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                };
-
-                const goalChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: goalData,
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-            </script>
+        <div class="charts-container">
+            <div class="chart-box">
+                <h3>Expense Analysis by Category</h3>
+                <canvas id="expenseCategoryChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>Top 5 Expenses</h3>
+                <canvas id="topExpensesChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>Cash Flow (Income)</h3>
+                <canvas id="incomeChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>Net Amount Breakdown</h3>
+                <canvas id="netAmountChart"></canvas>
+            </div>
         </div>
-
-        <!-- Add buttons for quick actions -->
         <div class="section actions">
             <a href="{% url 'add_income' %}" class="btn-action">Add Income</a>
             <a href="{% url 'add_expense' %}" class="btn-action">Add Expense</a>
-            
         </div>
     </div>
+    <script>
+        const ctx1 = document.getElementById('expenseCategoryChart').getContext('2d');
+        const expenseCategoryChart = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['Salary', 'Passive Income', 'Living Expenses', 'Transport', 'Dining Out', 'Charity', 'Medical'],
+                datasets: [{
+                    label: 'Amount (₹)',
+                    data: [20000, 5000, 8000, 3000, 4000, 2000, 2500],
+                    backgroundColor: '#50BFE6'
+                }]
+            },
+            options: { responsive: true }
+        });
+        
+        const ctx2 = document.getElementById('topExpensesChart').getContext('2d');
+        const topExpensesChart = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['Rent', 'Groceries', 'Clothes', 'Entertainment', 'Cash Loan'],
+                datasets: [{
+                    label: 'Expense (₹)',
+                    data: [15000, 5000, 3000, 4000, 2000],
+                    backgroundColor: '#e74c3c'
+                }]
+            },
+            options: { responsive: true }
+        });
 
+        const ctx3 = document.getElementById('incomeChart').getContext('2d');
+        const incomeChart = new Chart(ctx3, {
+            type: 'pie',
+            data: {
+                labels: ['YouTube', 'DWD', 'Teachable'],
+                datasets: [{
+                    label: 'Income Sources',
+                    data: [7000, 12000, 6000],
+                    backgroundColor: ['#27ae60', '#2980b9', '#f39c12']
+                }]
+            },
+            options: { responsive: true }
+        });
+        
+        const ctx4 = document.getElementById('netAmountChart').getContext('2d');
+        const netAmountChart = new Chart(ctx4, {
+            type: 'bar',
+            data: {
+                labels: ['Net Amount', 'Credit', 'Debit'],
+                datasets: [{
+                    label: 'Amount (₹)',
+                    data: [10000, 20000, 10000],
+                    backgroundColor: ['#2ecc71', '#3498db', '#e74c3c']
+                }]
+            },
+            options: { responsive: true }
+        });
+    </script>
 </body>
 </html>
