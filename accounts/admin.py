@@ -8,4 +8,4 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
         ('Custom Fields', {'fields': ()}),  # Add any custom fields here if needed
     )
-    list_display = ['username', 'email', 'is_staff', 'is_active']
+    list_display = ['username', 'email', 'is_staff', 'is_active','date_joined']

@@ -5,9 +5,10 @@ from django.contrib.auth.views import LoginView, LogoutView
 from .forms import CustomUserCreationForm
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib import messages
 
+User = get_user_model()
 # Register View
 def register(request):
     if request.method == "POST":
