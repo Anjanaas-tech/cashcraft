@@ -1,29 +1,33 @@
-{% extends 'base_generic.html' %}
-
-{% block content %}
+<div class="container mt-4">
   <h2>Income List</h2>
-  <a href="{% url 'income_create' %}" class="btn btn-primary">Add Income</a>
+  
+  <p><strong>Debugging:</strong> Found {{ incomes.count }} incomes</p> <!-- Debugging Line -->
+
   <table class="table">
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Amount</th>
-        <th>Date</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for income in incomes %}
-        <tr>
-          <td>{{ income.title }}</td>
-          <td>{{ income.amount }}</td>
-          <td>{{ income.date }}</td>
-          <td>
-            <a href="{% url 'income_update' income.pk %}" class="btn btn-warning">Edit</a>
-            <a href="{% url 'income_delete' income.pk %}" class="btn btn-danger">Delete</a>
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
+      <thead>
+          <tr>
+              <th>Title</th>
+              <th>Amount</th>
+              <th>Date</th>
+              <th>Actions</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for income in incomes %}
+              <tr>
+                  <td>{{ income.title }}</td>
+                  <td>{{ income.amount }}</td>
+                  <td>{{ income.date }}</td>
+                  <td>
+                      <a href="{% url 'income_update' income.pk %}" class="btn btn-warning">Edit</a>
+                      <a href="{% url 'income_delete' income.pk %}" class="btn btn-danger">Delete</a>
+                  </td>
+              </tr>
+          {% empty %}
+              <tr>
+                  <td colspan="4">No income records found.</td>
+              </tr>
+          {% endfor %}
+      </tbody>
   </table>
-{% endblock %}
+</div>

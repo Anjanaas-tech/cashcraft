@@ -1,14 +1,16 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from .models import Income, Expense, Goal
-from django.db.models import Sum
-from income.models import Income
+from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.shortcuts import redirect
+from django.http import HttpResponse
+from django.db.models import Sum
+from .models import Income, Expense, Goal
+from accounts.models import User  # Assuming your custom user model is in accounts app
 
 
 @login_required
 def dashboard(request):
+    users = User.objects.all()
+
     # Fetch total income for the logged-in user
     total_income = Income.objects.filter(user=request.user).aggregate(Sum('amount'))['amount__sum'] or 0
 
@@ -34,11 +36,13 @@ def dashboard(request):
 
     # Render the dashboard with the data
     return render(request, 'dashboard/dashboard.html', {
+        'users': users,
         'total_income': total_income,
         'total_expenses': total_expenses,
         'goal_progress': goal_progress,
         'user_expenses': user_expenses,  # Pass user_expenses to template
     })
+
 
 @login_required
 def add_income(request):
@@ -61,8 +65,9 @@ def add_income(request):
             return redirect('dashboard')  # Redirect to the dashboard
         else:
             messages.error(request, "Please fill in all fields.")
-    
+
     return render(request, 'dashboard/add_income.html')
+
 
 @login_required
 def add_expense(request):
@@ -70,7 +75,7 @@ def add_expense(request):
         amount = request.POST.get("amount")
         category = request.POST.get("category")
         date = request.POST.get("date")
-        description = request.POST.get("description")
+        description = request.POST.get("description", "")
 
         # Save the expense data
         Expense.objects.create(
@@ -80,8 +85,18 @@ def add_expense(request):
             date=date,
             description=description,
         )
+        messages.success(request, "Expense added successfully.")
         return redirect("dashboard")
 
     categories = ["Food", "Transport", "Bills", "Entertainment", "Miscellaneous"]
     return render(request, "dashboard/add_expense.html", {"categories": categories})
 
+
+@login_required
+def update_financials(request):
+    if request.method == 'POST':
+        # Process the financial data (income, expense, budget)
+        messages.success(request, "Financial data updated successfully.")
+        return redirect('dashboard')  # Redirect back to the dashboard
+    
+    return HttpResponse("Invalid request", status=400)

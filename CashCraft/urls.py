@@ -12,5 +12,6 @@ urlpatterns = [
     path('goals/', include('goals.urls')),
     path('categories/', include('categories.urls')),
     path('', views.landing_page, name='landing_page'),
+    
 
 ]

@@ -3,175 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Financial Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Personal Budget Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #1E1E2F;
-            color: #fff;
-            margin: 0;
-            padding: 0;
+            font-family: 'Arial', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
         }
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 50px auto;
-            background-color: #25273D;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        .dark-mode {
+            background-color: #1a202c;
+            color: #e2e8f0;
         }
-        h2, h3, h4 {
-            color: #50BFE6;
-        }
-        .section {
-            margin-bottom: 40px;
-        }
-        .financial-overview {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-        }
-        .financial-card {
-            background-color: #323552;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            flex: 1;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .financial-card h4 {
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-        .financial-card p {
-            font-size: 24px;
-            color: #50BFE6;
-        }
-        .btn-action {
-            display: inline-block;
-            padding: 12px 18px;
-            margin: 8px;
-            background-color: #50BFE6;
+        .sidebar {
+            width: 250px;
+            background: #2d3748;
             color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: 0.3s;
-        }
-        .btn-action:hover {
-            background-color: #3a9fcf;
-        }
-        .charts-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-        .chart-box {
-            background-color: #323552;
+            height: 100vh;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            transition: transform 0.3s ease-in-out;
+        }
+        .main-content {
+            margin-left: 270px;
+            padding: 20px;
+        }
+        .card {
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: scale(1.05);
         }
     </style>
 </head>
-<body>
-    <div class="dashboard-container">
-        <h2>Welcome, {{ user_profile.username }}!</h2>
-        <div class="section financial-overview">
-            <div class="financial-card">
-                <h4>Total Income</h4>
-                <p>₹{{ total_income }}</p>
+<body class="bg-gray-100">
+    <div class="sidebar">
+        <h2 class="text-2xl font-bold mb-6">Menu</h2>
+        <button class="block w-full text-left mb-4 bg-green-500 px-4 py-2 rounded-lg" onclick="window.location.href='{% url 'add_income' %}'">Add Income</button>
+        <button class="block w-full text-left mb-4 bg-blue-500 px-4 py-2 rounded-lg" onclick="window.location.href='{% url 'add_expense' %}'">Add Expense</button>
+        <button class="block w-full text-left mb-4 bg-yellow-500 px-4 py-2 rounded-lg" onclick="window.location.href='{% url 'edit_profile' %}'">Edit Profile</button>
+        <button class="block w-full text-left bg-gray-700 px-4 py-2 rounded-lg" onclick="toggleDarkMode()">Toggle Night Mode</button>
+    </div>
+
+    <div class="main-content">
+        <div class="header text-4xl font-bold text-blue-600 mb-8">Personal Budget Tracker</div>
+        
+        <!-- Input Fields -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-white p-6 rounded-lg shadow-md card">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Expected Monthly Income:</label>
+                <input type="number" id="expectedIncome" class="w-full px-3 py-2 border rounded-lg" placeholder="Enter expected income" min="0">
             </div>
-            <div class="financial-card">
-                <h4>Total Expense</h4>
-                <p>₹{{ total_expenses }}</p>
+            <div class="bg-white p-6 rounded-lg shadow-md card">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Expected Expenses:</label>
+                <input type="number" id="expectedExpenses" class="w-full px-3 py-2 border rounded-lg" placeholder="Enter expected expenses" min="0">
             </div>
-            <div class="financial-card">
-                <h4>Current Balance</h4>
-                <p>₹{{ balance }}</p>
-            </div>
-        </div>
-        <div class="charts-container">
-            <div class="chart-box">
-                <h3>Expense Analysis by Category</h3>
-                <canvas id="expenseCategoryChart"></canvas>
-            </div>
-            <div class="chart-box">
-                <h3>Top 5 Expenses</h3>
-                <canvas id="topExpensesChart"></canvas>
-            </div>
-            <div class="chart-box">
-                <h3>Cash Flow (Income)</h3>
-                <canvas id="incomeChart"></canvas>
-            </div>
-            <div class="chart-box">
-                <h3>Net Amount Breakdown</h3>
-                <canvas id="netAmountChart"></canvas>
+            <div class="bg-white p-6 rounded-lg shadow-md card">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Savings Goal:</label>
+                <input type="number" id="savingsGoal" class="w-full px-3 py-2 border rounded-lg" placeholder="Enter savings goal" min="0">
             </div>
         </div>
-        <div class="section actions">
-            <a href="{% url 'add_income' %}" class="btn-action">Add Income</a>
-            <a href="{% url 'add_expense' %}" class="btn-action">Add Expense</a>
+
+        <!-- Spending Trends & Analysis -->
+        <div class="bg-white p-6 rounded-lg shadow-md mt-8 card">
+            <h3 class="text-2xl font-semibold mb-4">Spending Trends & Analysis</h3>
+            <div id="chart"></div>
+        </div>
+
+
+        <!-- Report Section with Export Feature -->
+        <div class="bg-white p-6 rounded-lg shadow-md mt-8 card">
+            <h3 class="text-2xl font-semibold mb-4">Budget Report</h3>
+            <div id="report" class="text-gray-700"></div>
+            <button class="mt-4 bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600" onclick="generateReport()">Generate Report</button>
+            <button class="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" onclick="exportPDF()">Download as PDF</button>
         </div>
     </div>
-    <script>
-        const ctx1 = document.getElementById('expenseCategoryChart').getContext('2d');
-        const expenseCategoryChart = new Chart(ctx1, {
-            type: 'bar',
-            data: {
-                labels: ['Salary', 'Passive Income', 'Living Expenses', 'Transport', 'Dining Out', 'Charity', 'Medical'],
-                datasets: [{
-                    label: 'Amount (₹)',
-                    data: [20000, 5000, 8000, 3000, 4000, 2000, 2500],
-                    backgroundColor: '#50BFE6'
-                }]
-            },
-            options: { responsive: true }
-        });
-        
-        const ctx2 = document.getElementById('topExpensesChart').getContext('2d');
-        const topExpensesChart = new Chart(ctx2, {
-            type: 'bar',
-            data: {
-                labels: ['Rent', 'Groceries', 'Clothes', 'Entertainment', 'Cash Loan'],
-                datasets: [{
-                    label: 'Expense (₹)',
-                    data: [15000, 5000, 3000, 4000, 2000],
-                    backgroundColor: '#e74c3c'
-                }]
-            },
-            options: { responsive: true }
-        });
 
-        const ctx3 = document.getElementById('incomeChart').getContext('2d');
-        const incomeChart = new Chart(ctx3, {
-            type: 'pie',
-            data: {
-                labels: ['YouTube', 'DWD', 'Teachable'],
-                datasets: [{
-                    label: 'Income Sources',
-                    data: [7000, 12000, 6000],
-                    backgroundColor: ['#27ae60', '#2980b9', '#f39c12']
-                }]
-            },
-            options: { responsive: true }
-        });
-        
-        const ctx4 = document.getElementById('netAmountChart').getContext('2d');
-        const netAmountChart = new Chart(ctx4, {
-            type: 'bar',
-            data: {
-                labels: ['Net Amount', 'Credit', 'Debit'],
-                datasets: [{
-                    label: 'Amount (₹)',
-                    data: [10000, 20000, 10000],
-                    backgroundColor: ['#2ecc71', '#3498db', '#e74c3c']
-                }]
-            },
-            options: { responsive: true }
-        });
+    <script>
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+        }
+
+        function generateReport() {
+            let income = parseFloat(document.getElementById("expectedIncome").value) || 0;
+            let expenses = parseFloat(document.getElementById("expectedExpenses").value) || 0;
+            let savings = parseFloat(document.getElementById("savingsGoal").value) || 0;
+            let balance = income - expenses;
+            let status = balance >= savings ? "On Track!" : "Needs Improvement!";
+            
+            document.getElementById("report").innerHTML = `
+                <p><strong>Expected Income:</strong> $${income}</p>
+                <p><strong>Expected Expenses:</strong> $${expenses}</p>
+                <p><strong>Savings Goal:</strong> $${savings}</p>
+                <p><strong>Balance After Expenses:</strong> $${balance}</p>
+                <p><strong>Status:</strong> ${status}</p>
+            `;
+        }
+
+        function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            let doc = new jsPDF();
+            doc.text("Personal Budget Report", 10, 10);
+            doc.text(document.getElementById("report").innerText, 10, 20);
+            doc.save("budget_report.pdf");
+        }
+
+        // Spending Trends Chart
+        var options = {
+            chart: { type: 'pie' },
+            series: [45, 25, 15, 10, 5],
+            labels: ['Rent', 'Groceries', 'Transportation', 'Entertainment', 'Miscellaneous']
+        };
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
     </script>
 </body>
 </html>
