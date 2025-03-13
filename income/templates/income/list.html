@@ -1,33 +1,176 @@
-<div class="container mt-4">
-  <h2>Income List</h2>
-  
-  <p><strong>Debugging:</strong> Found {{ incomes.count }} incomes</p> <!-- Debugging Line -->
+{% load static %}
+<style>
+body {
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("{% static 'images/login.jpg' %}") no-repeat center center/cover;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    animation: fadeIn 1s ease-in;
+}
 
-  <table class="table">
-      <thead>
-          <tr>
-              <th>Title</th>
-              <th>Amount</th>
-              <th>Date</th>
-              <th>Actions</th>
-          </tr>
-      </thead>
-      <tbody>
-          {% for income in incomes %}
-              <tr>
-                  <td>{{ income.title }}</td>
-                  <td>{{ income.amount }}</td>
-                  <td>{{ income.date }}</td>
-                  <td>
-                      <a href="{% url 'income_update' income.pk %}" class="btn btn-warning">Edit</a>
-                      <a href="{% url 'income_delete' income.pk %}" class="btn btn-danger">Delete</a>
-                  </td>
-              </tr>
-          {% empty %}
-              <tr>
-                  <td colspan="4">No income records found.</td>
-              </tr>
-          {% endfor %}
-      </tbody>
-  </table>
+.tracker-container {
+    background: linear-gradient(135deg,rgb(55, 8, 114),rgb(166, 152, 188));
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    padding: 25px;
+    max-width: 900px;
+    margin: auto;
+    animation: slideIn 0.8s ease-in-out;
+}
+
+.tracker-header {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 26px;
+    font-weight: bold;
+    border-radius: 10px 10px 0 0;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.tracker-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.tracker-table th {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+    text-align: center;
+    padding: 12px;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+.tracker-table td {
+    text-align: center;
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    transition: background 0.3s;
+    background-color: white; /* Added white background */
+    color: #333; /* Ensuring text is readable */
+}
+
+
+.tracker-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.tracker-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+}
+
+.btn-custom {
+    background: linear-gradient(135deg, #ff512f, #dd2476);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s;
+}
+
+.btn-custom:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 16px rgb(255, 255, 255);
+}
+
+.search-bar {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 2px solid #6a11cb;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.search-bar:focus {
+    border-color: #2575fc;
+    outline: none;
+    box-shadow: 0 0 8px rgba(37, 117, 252, 0.5);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+</style>
+
+<div class="container mt-5">
+    <div class="tracker-container">
+        <div class="tracker-header">Income Tracker</div>
+        
+        <input type="text" id="incomeSearch" class="search-bar" placeholder="Search Income..." onkeyup="searchIncome()">
+        
+        <table class="tracker-table" id="incomeTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Item</th>
+                    <th>Income (₹)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for income in incomes %}
+                    <tr>
+                        <td>{{ income.date }}</td>
+                        <td>{{ income.description }}</td>
+                        <td>{{ income.title }}</td>
+                        <td class="text-success">₹{{ income.amount }}</td>
+                        <td>
+                            <a href="{% url 'income_update' income.pk %}" class="btn btn-warning btn-custom">Edit</a>
+                            <a href="{% url 'income_delete' income.pk %}" class="btn btn-danger btn-custom">Delete</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">No income records found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'add_income' %}" class="btn btn-primary btn-custom" style="margin-top: 15px; display: inline-block;">
+            ← Back to Income
+        </a>
+        
+    </div>
 </div>
+
+<script>
+function searchIncome() {
+    let input = document.getElementById("incomeSearch").value.toLowerCase();
+    let tableRows = document.querySelectorAll("#incomeTable tbody tr");
+    
+    tableRows.forEach(row => {
+        let title = row.cells[2].textContent.toLowerCase();
+        if (title.includes(input)) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+}
+</script>

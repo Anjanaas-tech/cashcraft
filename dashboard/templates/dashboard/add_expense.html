@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,82 +7,107 @@
     <title>Add Expense</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #0B132B;
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+            url("{% static 'images/home4.jpg' %}") no-repeat center center/cover;
             color: #fff;
             margin: 0;
             padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 600px;
-            margin: 50px auto;
+            max-width: 500px;
             padding: 20px;
-            background-color: #1C2541;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            background: rgba(109, 27, 180, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(76, 15, 116, 0.42);
+            text-align: center;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(255, 255, 255, 0.2);
         }
 
         h1 {
-            font-size: 24px;
-            color: #5BC0BE;
-            text-align: center;
+            font-size: 26px;
+            font-weight: 600;
+            color: rgb(0, 218, 225);
             margin-bottom: 20px;
         }
 
         label {
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 15px;
+            font-weight: 400;
+            color: #ffffff;
+            display: block;
             margin-bottom: 8px;
         }
 
         .form-control {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #5BC0BE;
-            border-radius: 5px;
-            background-color: #3A506B;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.15);
             color: #fff;
+            font-size: 14px;
+            transition: 0.3s ease-in-out;
         }
 
         .form-control:focus {
-            border-color: #6FFFE9;
+            border: 1px solid #6FFFE9;
             outline: none;
+            box-shadow: 0 0 10px rgba(111, 255, 233, 0.5);
         }
 
         button.btn {
-            padding: 10px;
+            padding: 12px;
             border: none;
-            background-color: #5BC0BE;
-            color: white;
             font-size: 16px;
-            border-radius: 5px;
+            font-weight: bold;
+            border-radius: 8px;
             cursor: pointer;
             margin-top: 15px;
             width: 100%;
-            transition: 0.3s;
+            transition: all 0.3s ease-in-out;
         }
 
-        button.btn:hover {
-            background-color: #3A506B;
+        button.btn-primary {
+            background: linear-gradient(to right, #6FFFE9, #5BC0BE);
+            color: #000;
+        }
+
+        button.btn-primary:hover {
+            background: linear-gradient(to right, #5BC0BE, rgb(11, 54, 106));
+            transform: scale(1.05);
         }
 
         .btn-secondary {
-            background-color: #6FFFE9;
-            color: #000;
-            margin-top: 10px;
+            background: rgba(9, 9, 9, 0.2);
+            color: #fff;
         }
 
         .btn-secondary:hover {
-            background-color: #5BC0BE;
+            background: rgba(0, 0, 0, 0.3);
         }
 
         @media (max-width: 600px) {
             .container {
                 width: 90%;
-                padding: 15px;
+                padding: 20px;
             }
         }
     </style>
@@ -89,7 +115,8 @@
 <body>
     <div class="container">
         <h1>Add Expense</h1>
-        <form method="POST" action="{% url 'add_expense' %}">
+    <form method="POST" action="{% url 'expenses:list' %}"> 
+
             {% csrf_token %}
             
             <div class="mb-3">
@@ -102,6 +129,8 @@
                 <select name="category" id="category" class="form-control" required>
                     {% for category in categories %}
                         <option value="{{ category }}">{{ category }}</option>
+                    {% empty %}
+                        <option disabled>No categories available</option>
                     {% endfor %}
                 </select>
             </div>
@@ -115,10 +144,11 @@
                 <label for="description" class="form-label">Description</label>
                 <textarea name="description" id="description" class="form-control" rows="3" placeholder="Enter details about the expense"></textarea>
             </div>
+            <button type="submit" class="btn btn-primary">Add Expense</button>
+    </form>
 
-            <button type="submit" class="btn">Add Expense</button>
-            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
-        </form>
+        <a href="{% url 'expenses:list' %}" class="btn btn-primary mt-2">View Expense List</a>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary mt-2">Cancel</a>
     </div>
 </body>
 </html>

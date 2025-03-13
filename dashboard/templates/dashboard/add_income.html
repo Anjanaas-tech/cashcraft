@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Income</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                        url("{% static 'images/home4.jpg' %}") no-repeat center center/cover;
             font-family: 'Poppins', sans-serif;
-            background-color: #1E1E2F;
             color: #fff;
             margin: 0;
             padding: 0;
@@ -48,7 +50,7 @@
         }
         button, .list-btn {
             padding: 12px;
-            width: 48%;
+            width: 45%;
             text-align: center;
             background-color: #50BFE6;
             border: none;
@@ -75,7 +77,6 @@
     <div class="container">
         <h1>Add Income</h1>
         
-        <!-- ✅ FIXED FORM: Removed duplicate forms -->
         <form method="POST" action="{% url 'income_add' %}">
             {% csrf_token %}
 
@@ -106,7 +107,7 @@
             </div>
         </form>
 
-        <a href="{% url 'add_income' %}" class="back-link">Back to Dashboard</a>
+        <a href="{% url 'dashboard' %}" class="back-link">Back to Dashboard</a>
     </div>
 
     <script>
