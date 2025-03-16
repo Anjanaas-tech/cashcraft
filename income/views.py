@@ -26,9 +26,10 @@ class IncomeCreateView(CreateView):
 
 class IncomeUpdateView(UpdateView):
     model = Income
-    template_name = "income/update.html"  
-    fields = ["title", "amount", "date"]
-    success_url = reverse_lazy("income_list")  
+    fields = ['category', 'item', 'amount', 'date']  # ✅ Correct
+    template_name = 'income/update.html'
+    success_url = reverse_lazy('income_list')  # Adjust as per your URL names
+ 
 
 class IncomeDeleteView(DeleteView):
     model = Income

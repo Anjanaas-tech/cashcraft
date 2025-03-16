@@ -43,8 +43,7 @@ INSTALLED_APPS = [
     'income',
     'expenses',
     'goals',
-    'categories',
-    'adminpanel',
+
 ]
 
 MIDDLEWARE = [

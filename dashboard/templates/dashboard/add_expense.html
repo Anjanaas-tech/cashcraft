@@ -115,7 +115,7 @@
 <body>
     <div class="container">
         <h1>Add Expense</h1>
-    <form method="POST" action="{% url 'expenses:list' %}"> 
+        <form method="POST" action="{% url 'expenses:expense_create' %}">
 
             {% csrf_token %}
             

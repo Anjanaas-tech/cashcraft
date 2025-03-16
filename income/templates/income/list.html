@@ -1,5 +1,6 @@
 {% load static %}
 <style>
+/* --- Your CSS kept same --- */
 body {
     background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("{% static 'images/login.jpg' %}") no-repeat center center/cover;
     font-family: 'Poppins', sans-serif;
@@ -7,7 +8,6 @@ body {
     color: #333;
     animation: fadeIn 1s ease-in;
 }
-
 .tracker-container {
     background: linear-gradient(135deg,rgb(55, 8, 114),rgb(166, 152, 188));
     border-radius: 12px;
@@ -17,7 +17,6 @@ body {
     margin: auto;
     animation: slideIn 0.8s ease-in-out;
 }
-
 .tracker-header {
     background: linear-gradient(135deg, #6a11cb, #2575fc);
     color: white;
@@ -29,13 +28,11 @@ body {
     text-transform: uppercase;
     letter-spacing: 1.5px;
 }
-
 .tracker-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
 }
-
 .tracker-table th {
     background: linear-gradient(135deg, #6a11cb, #2575fc);
     color: white;
@@ -44,26 +41,21 @@ body {
     font-size: 16px;
     text-transform: uppercase;
 }
-
 .tracker-table td {
     text-align: center;
     padding: 12px;
     border-bottom: 1px solid #ddd;
     transition: background 0.3s;
-    background-color: white; /* Added white background */
-    color: #333; /* Ensuring text is readable */
+    background-color: white;
+    color: #333;
 }
-
-
 .tracker-table tr:nth-child(even) {
     background-color: #f2f2f2;
 }
-
 .tracker-table tr:hover {
     background-color: rgba(255, 255, 255, 0.2);
     cursor: pointer;
 }
-
 .btn-custom {
     background: linear-gradient(135deg, #ff512f, #dd2476);
     color: white;
@@ -73,13 +65,12 @@ body {
     font-size: 16px;
     cursor: pointer;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s;
+    margin: 5px;
 }
-
 .btn-custom:hover {
     transform: scale(1.1);
     box-shadow: 0 8px 16px rgb(255, 255, 255);
 }
-
 .search-bar {
     width: 100%;
     padding: 10px;
@@ -89,31 +80,18 @@ body {
     font-size: 16px;
     transition: border-color 0.3s;
 }
-
 .search-bar:focus {
     border-color: #2575fc;
     outline: none;
     box-shadow: 0 0 8px rgba(37, 117, 252, 0.5);
 }
-
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
-
 @keyframes slideIn {
-    from {
-        transform: translateY(-30px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 </style>
 
@@ -137,8 +115,8 @@ body {
                 {% for income in incomes %}
                     <tr>
                         <td>{{ income.date }}</td>
-                        <td>{{ income.description }}</td>
-                        <td>{{ income.title }}</td>
+                        <td>{{ income.category }}</td>
+                        <td>{{ income.item }}</td>
                         <td class="text-success">₹{{ income.amount }}</td>
                         <td>
                             <a href="{% url 'income_update' income.pk %}" class="btn btn-warning btn-custom">Edit</a>
@@ -152,10 +130,19 @@ body {
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{% url 'add_income' %}" class="btn btn-primary btn-custom" style="margin-top: 15px; display: inline-block;">
-            ← Back to Income
-        </a>
-        
+
+        <!-- Add & Save Buttons -->
+        <div style="text-align:center; margin-top: 20px;">
+            <a href="{% url 'add_income' %}" class="btn btn-primary btn-custom">
+                ➕ Add New Income
+            </a>
+            <a href="{% url 'income_list' %}" class="btn btn-success btn-custom">
+                💾 Save Changes
+            </a>
+            <a href="{% url 'add_income' %}" class="btn btn-primary btn-custom" style="margin-top: 15px; display: inline-block;">
+                ← Back to Income
+            </a>
+        </div>
     </div>
 </div>
 
@@ -165,8 +152,10 @@ function searchIncome() {
     let tableRows = document.querySelectorAll("#incomeTable tbody tr");
     
     tableRows.forEach(row => {
-        let title = row.cells[2].textContent.toLowerCase();
-        if (title.includes(input)) {
+        let category = row.cells[1].textContent.toLowerCase();
+        let item = row.cells[2].textContent.toLowerCase();
+        let income = row.cells[3].textContent.toLowerCase();
+        if (category.includes(input) || item.includes(input) || income.includes(input)) {
             row.style.display = "";
         } else {
             row.style.display = "none";
