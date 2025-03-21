@@ -8,6 +8,6 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls')), 
     path('income/', include('income.urls')), 
     path('expenses/', include(('expenses.urls', 'expenses'), namespace='expenses')),  # <-- KEEP THIS ONE
-    path('goals/', include('goals.urls')),
+    path('goals/', include('goals.urls', namespace='goals')),
     path('', views.landing_page, name='landing_page'),
 ]
