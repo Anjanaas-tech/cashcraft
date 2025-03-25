@@ -4,7 +4,10 @@ from .models import Goal
 class GoalForm(forms.ModelForm):
     class Meta:
         model = Goal
-        fields = ['name', 'target_amount', 'target_date', 'description']
+        fields = ["name", "target_amount", "current_balance", "allocated_amount"]
         widgets = {
-            'target_date': forms.DateInput(attrs={'type': 'date'}),
+            "name": forms.TextInput(attrs={"class": "border p-2 w-full rounded"}),
+            "target_amount": forms.NumberInput(attrs={"class": "border p-2 w-full rounded"}),
+            "current_balance": forms.NumberInput(attrs={"class": "border p-2 w-full rounded"}),
+            "allocated_amount": forms.NumberInput(attrs={"class": "border p-2 w-full rounded"}),
         }

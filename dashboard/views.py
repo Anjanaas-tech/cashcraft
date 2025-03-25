@@ -21,15 +21,24 @@ def dashboard(request):
     goals = Goal.objects.filter(user=request.user)
 
     # Calculate the progress for each goal
-    goal_progress = [
-        {
+    goal_progress = []
+    for goal in goals:
+        # Calculate the current balance for this goal (sum of allocated amounts)
+        current_balance = sum(expense.amount for expense in Expense.objects.filter(user=request.user, category=goal.category))
+        
+        # Ensure remaining balance calculation is accurate
+        remaining_balance = max(goal.target_amount - current_balance, 0)
+
+        # Calculate progress percentage safely
+        progress = (current_balance / goal.target_amount) * 100 if goal.target_amount else 0
+
+        goal_progress.append({
             'goal_name': goal.name,
             'target_amount': goal.target_amount,
-            'current_amount': sum(expense.amount for expense in Expense.objects.filter(user=request.user, category=goal.category)),
-            'progress': (sum(expense.amount for expense in Expense.objects.filter(user=request.user, category=goal.category)) / goal.target_amount) * 100 if goal.target_amount else 0
-        }
-        for goal in goals
-    ]
+            'current_balance': current_balance,
+            'remaining_balance': remaining_balance,
+            'progress': progress
+        })
 
     # Fetch expenses for the logged-in user
     user_expenses = Expense.objects.filter(user=request.user)
@@ -40,8 +49,9 @@ def dashboard(request):
         'total_income': total_income,
         'total_expenses': total_expenses,
         'goal_progress': goal_progress,
-        'user_expenses': user_expenses,  # Pass user_expenses to template
+        'user_expenses': user_expenses,
     })
+
 
 
 @login_required

@@ -1,80 +1,41 @@
 {% block content %}
-<div class="container py-4 animate__animated animate__fadeIn">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-gradient fw-bold">🎯 Your Financial Goals</h2>
-        <a href="{% url 'goals:create' %}" class="btn btn-lg btn-success shadow-sm">
-            <i class="fas fa-plus-circle me-2"></i> Create Goal
-        </a>
+<div class="container mx-auto p-6">
+    <h2 class="text-2xl font-semibold mb-4">Savings Goals</h2>
+    <div class="mb-4 flex justify-end">
+        <a href="{% url 'goals:goal_create' %}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Create Goal</a>
     </div>
-
-    <div class="table-responsive shadow-lg rounded bg-white p-3">
-        <table class="table table-hover align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>Name</th>
-                    <th>Target Amount</th>
-                    <th>Target Date</th>
-                    <th>Progress</th>
-                    <th>Actions</th>
+    <div class="overflow-hidden shadow-lg rounded-lg bg-white">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="p-4">Goal Name</th>
+                    <th class="p-4">Savings Goal</th>
+                    <th class="p-4">Current Balance</th>
+                    <th class="p-4">Allocated Amount</th>
+                    <th class="p-4">Remaining Amount</th>
+                    <th class="p-4">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for goal in goals %}
-                <tr>
-                    <td class="fw-semibold">{{ goal.name }}</td>
-                    <td class="text-success">Rs.{{ goal.target_amount }}</td>
-                    <td>{{ goal.target_date }}</td>
-                    <td>
-                        <div class="progress rounded-pill" style="height: 20px;">
-                            <div class="progress-bar bg-gradient" role="progressbar"
-                                 style="width: {{ goal.calculate_progress }}%;"
-                                 aria-valuenow="{{ goal.calculate_progress }}" aria-valuemin="0" aria-valuemax="100">
-                                {{ goal.calculate_progress|floatformat:1 }}%
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <a href="{% url 'goals:update' goal.id %}" class="btn btn-outline-warning btn-sm me-2 shadow-sm">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <a href="{% url 'goals:delete' goal.id %}" class="btn btn-outline-danger btn-sm shadow-sm">
-                            <i class="fas fa-trash-alt"></i>
-                        </a>
+                <tr class="border-t hover:bg-gray-100 transition">
+                    <td class="p-4">{{ goal.name }}</td>
+                    <td class="p-4">Rs{{ goal.target_amount }}</td>
+                    <td class="p-4">Rs{{ goal.current_balance }}</td>
+                    <td class="p-4">Rs{{ goal.allocated_amount }}</td>
+                    <td class="p-4">Rs{{ goal.remaining_amount }}</td>
+                    <td class="p-4">
+                        <a href="{% url 'goals:goal_edit' goal.id %}" class="text-blue-600 hover:text-blue-800 mr-2">Edit</a>
+                        <a href="{% url 'goals:goal_delete' goal.id %}" class="text-red-600 hover:text-red-800">Delete</a>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" class="text-center text-muted">No goals found. Start by creating one! 🚀</td>
+                    <td colspan="6" class="p-4 text-center text-gray-500">No goals found.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
-
-<!-- Custom Styling -->
-<style>
-    .text-gradient {
-        background: linear-gradient(90deg, #0f9b8e, #00c3ff);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    .progress-bar.bg-gradient {
-        background: linear-gradient(90deg, #00c3ff, #0f9b8e);
-        transition: width 0.8s ease-in-out;
-    }
-    .btn:hover {
-        transform: scale(1.05);
-        transition: 0.3s;
-    }
-    table tbody tr:hover {
-        background-color: #f8f9fa;
-        transition: 0.2s;
-    }
-</style>
-
-<!-- Animate.css & Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-
 {% endblock %}

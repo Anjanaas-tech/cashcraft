@@ -1,9 +1,27 @@
 {% block content %}
-<h2>{{ view.object|default:'Create' }} Goal</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Save</button>
-    <a href="{% url 'goals:list' %}" class="btn btn-secondary">Cancel</a>
-</form>
+<div class="container mx-auto p-6">
+    <h2 class="text-2xl font-semibold mb-4">{% if form.instance.pk %}Edit{% else %}Create{% endif %} Goal</h2>
+    <div class="bg-white shadow-lg p-6 rounded-lg">
+        <form method="post">
+            {% csrf_token %}
+            <div class="space-y-4">
+                {% for field in form %}
+                <div>
+                    <label class="block font-medium">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <p class="text-red-500 text-sm">{{ field.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="mt-4 flex justify-between">
+                <a href="{% url 'goals:goal_list' %}" class="text-gray-600 hover:underline">Cancel</a>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                    Save Goal
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

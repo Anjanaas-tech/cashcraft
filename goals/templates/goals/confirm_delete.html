@@ -1,26 +1,16 @@
 {% block content %}
-<style>
-    .progress {
-        background-color: #e9ecef;
-        border-radius: 5px;
-        overflow: hidden;
-        height: 20px;
-        width: 100%;
-    }
-    
-    .progress-bar {
-        background-color: #28a745;
-        height: 100%;
-        text-align: center;
-        color: #fff;
-        line-height: 20px;
-    }
-</style>    
-<h2>Delete Goal</h2>
-<p>Are you sure you want to delete "{{ object.name }}"?</p>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Yes, delete</button>
-    <a href="{% url 'goals:list' %}" class="btn btn-secondary">Cancel</a>
-</form>
+<div class="container mx-auto p-6">
+    <div class="bg-white shadow-lg p-6 rounded-lg text-center">
+        <h2 class="text-xl font-semibold mb-4">Are you sure you want to delete "{{ goal.name }}"?</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mt-4 flex justify-center space-x-4">
+                <a href="{% url 'goals:goal_list' %}" class="text-gray-600 hover:underline">Cancel</a>
+                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
+                    Delete
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
