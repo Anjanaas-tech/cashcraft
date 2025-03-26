@@ -4,128 +4,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Expense</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    
+    <title>Track Expense | Financial Freedom</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700&display=swap');
+
+        :root {
+            --primary: #6c5ce7;
+            --primary-dark: #5649c0;
+            --accent: #fd79a8;
+            --success: #00b894;
+            --teal: #5BC0BE;
+            --cyan: #6FFFE9;
+            --dark: #2d3436;
+            --light: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
-            url("{% static 'images/home4.jpg' %}") no-repeat center center/cover;
-            color: #fff;
-            margin: 0;
-            padding: 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                      url("{% static 'images/home4.jpg' %}") no-repeat center center/cover;
+            color: var(--light);
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        .container {
-            max-width: 500px;
-            padding: 20px;
-            background: rgba(109, 27, 180, 0.3);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(76, 15, 116, 0.42);
-            text-align: center;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .container:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(255, 255, 255, 0.2);
+        .expense-tracker {
+            width: 95%;
+            max-width: 450px;
+            max-height: 95vh;
+            background: rgba(44, 44, 84, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 0.8s;
+            position: relative;
+            overflow-y: auto; /* Changed to auto to ensure content fits */
         }
 
         h1 {
-            font-size: 26px;
-            font-weight: 600;
-            color: rgb(0, 218, 225);
-            margin-bottom: 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            background: linear-gradient(to right, var(--cyan), var(--teal));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            animation: pulse 2s infinite alternate;
+        }
+
+        .motivation-text {
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            border-left: 2px solid var(--accent);
+            padding-left: 0.75rem;
+        }
+
+        .form-group {
+            margin-bottom: 0.8rem; /* Reduced margin */
+            animation: fadeIn 0.6s both;
         }
 
         label {
-            font-size: 15px;
-            font-weight: 400;
-            color: #ffffff;
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 0.4rem; /* Reduced margin */
+            font-weight: 500;
+            color: var(--cyan);
+            font-size: 0.9rem;
         }
 
         .form-control {
             width: 100%;
-            padding: 12px;
-            border: none;
+            padding: 0.65rem; /* Reduced padding */
+            border: 2px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.15);
-            color: #fff;
-            font-size: 14px;
-            transition: 0.3s ease-in-out;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--light);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
         }
 
-        .form-control:focus {
-            border: 1px solid #6FFFE9;
-            outline: none;
-            box-shadow: 0 0 10px rgba(111, 255, 233, 0.5);
+        textarea.form-control {
+            min-height: 70px; /* Reduced height */
+            resize: none;
         }
 
-        button.btn {
-            padding: 12px;
-            border: none;
-            font-size: 16px;
-            font-weight: bold;
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.65rem; /* Reduced padding */
             border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
             cursor: pointer;
-            margin-top: 15px;
+            transition: all 0.3s ease;
             width: 100%;
-            transition: all 0.3s ease-in-out;
+            margin-bottom: 0.5rem;
+            text-decoration: none;
         }
 
-        button.btn-primary {
-            background: linear-gradient(to right, #6FFFE9, #5BC0BE);
-            color: #000;
-        }
-
-        button.btn-primary:hover {
-            background: linear-gradient(to right, #5BC0BE, rgb(11, 54, 106));
-            transform: scale(1.05);
+        .btn-primary {
+            background: linear-gradient(to right, var(--cyan), var(--teal));
+            color: var(--dark);
+            border: none;
+            box-shadow: 0 4px 15px rgba(91, 192, 190, 0.4);
         }
 
         .btn-secondary {
-            background: rgba(9, 9, 9, 0.2);
-            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .btn-secondary:hover {
-            background: rgba(0, 0, 0, 0.3);
+        .btn-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 6px;
         }
 
-        @media (max-width: 600px) {
-            .container {
-                width: 90%;
-                padding: 20px;
+        /* Responsive adjustments */
+        @media (max-height: 700px) {
+            .expense-tracker {
+                padding: 1rem;
+                max-height: 98vh;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.3rem;
+            }
+            
+            .form-group {
+                margin-bottom: 0.6rem;
+            }
+            
+            .form-control {
+                padding: 0.5rem;
+            }
+            
+            textarea.form-control {
+                min-height: 60px;
+            }
+            
+            .btn {
+                padding: 0.5rem;
+                margin-bottom: 0.4rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Add Expense</h1>
-        <form method="POST" action="{% url 'expenses:expense_create' %}">
+    <div class="expense-tracker animate__animated animate__fadeInUp">
+        <h1>Track Expense</h1>
+        <p class="motivation-text">"Mindful spending leads to financial freedom"</p>
 
+        <form method="POST" action="{% url 'expenses:expense_create' %}">
             {% csrf_token %}
             
-            <div class="mb-3">
-                <label for="amount" class="form-label">Amount</label>
-                <input type="number" step="0.5" name="amount" id="amount" class="form-control" required placeholder="Enter the amount" min="0">
+            <div class="form-group">
+                <label for="amount">Amount (₹)</label>
+                <input type="number" step="0.01" name="amount" id="amount" class="form-control" required placeholder="0.00" min="0">
             </div>
 
-            <div class="mb-3">
-                <label for="category" class="form-label">Category</label>
+            <div class="form-group">
+                <label for="category">Category</label>
                 <select name="category" id="category" class="form-control" required>
                     {% for category in categories %}
                         <option value="{{ category }}">{{ category }}</option>
@@ -135,20 +193,56 @@
                 </select>
             </div>
 
-            <div class="mb-3">
-                <label for="date" class="form-label">Date</label>
+            <div class="form-group">
+                <label for="date">Date</label>
                 <input type="date" name="date" id="date" class="form-control" required>
             </div>
 
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea name="description" id="description" class="form-control" rows="3" placeholder="Enter details about the expense"></textarea>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea name="description" id="description" class="form-control" placeholder="What was this expense for?"></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Add Expense</button>
-    </form>
 
-        <a href="{% url 'expenses:list' %}" class="btn btn-primary mt-2">View Expense List</a>
-        <a href="{% url 'dashboard' %}" class="btn btn-secondary mt-2">Cancel</a>
+            <button type="submit" class="btn btn-primary">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                    <polyline points="7 3 7 8 15 8"></polyline>
+                </svg>
+                Record Expense
+            </button>
+            
+            <a href="{% url 'expenses:list' %}" class="btn btn-secondary">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+                View Expenses
+            </a>
+
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Back to Dashboard
+            </a>
+        </form>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date as default
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+            
+            // Auto-focus amount field
+            document.getElementById('amount').focus();
+        });
+    </script>
 </body>
 </html>
