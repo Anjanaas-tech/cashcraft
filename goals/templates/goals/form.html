@@ -1,27 +1,339 @@
 {% block content %}
-<div class="container mx-auto p-6">
-    <h2 class="text-2xl font-semibold mb-4">{% if form.instance.pk %}Edit{% else %}Create{% endif %} Goal</h2>
-    <div class="bg-white shadow-lg p-6 rounded-lg">
-        <form method="post">
-            {% csrf_token %}
-            <div class="space-y-4">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    :root {
+        --primary: #6366f1;
+        --primary-hover: #4f46e5;
+        --secondary: #f59e0b;
+        --accent: #ec4899;
+        --light: #f9fafb;
+        --dark: #111827;
+        --gray: #6b7280;
+        --success: #10b981;
+    }
+    
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f3f4f6;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+        from { transform: translateX(-10px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+        70% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+    }
+    
+    .form-container {
+        animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    
+    .form-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 
+                    0 8px 10px -6px rgba(0, 0, 0, 0.04);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .form-header {
+        background: linear-gradient(135deg, var(--primary), #8b5cf6);
+        color: white;
+        padding: 1.5rem 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .form-header::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        transform: rotate(30deg);
+    }
+    
+    .form-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .form-subtitle {
+        font-size: 0.875rem;
+        opacity: 0.9;
+        margin-top: 0.25rem;
+        font-weight: 400;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .form-body {
+        padding: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+        animation: slideIn 0.5s ease-out forwards;
+        animation-delay: calc(var(--order) * 0.1s);
+        opacity: 0;
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 500;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+        font-size: 0.9375rem;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.3s ease;
+        background-color: var(--light);
+        font-size: 0.9375rem;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        outline: none;
+        background-color: white;
+    }
+    
+    .error-message {
+        color: #ef4444;
+        font-size: 0.8125rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .error-message::before {
+        content: "⚠";
+        font-size: 0.875rem;
+    }
+    
+    .btn {
+        padding: 0.875rem 1.75rem;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-size: 0.9375rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .btn-primary {
+        background: var(--primary);
+        color: white;
+        border: none;
+    }
+    
+    .btn-primary:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+    
+    .btn-outline {
+        background: transparent;
+        color: var(--gray);
+        border: 1px solid #e5e7eb;
+    }
+    
+    .btn-outline:hover {
+        background: #f9fafb;
+        color: var(--dark);
+        border-color: #d1d5db;
+    }
+    
+    .form-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e5e7eb;
+    }
+    
+    .progress-tracker {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .progress-step {
+        height: 4px;
+        border-radius: 2px;
+        background: #e5e7eb;
+        flex: 1;
+        transition: all 0.3s ease;
+    }
+    
+    .progress-step.active {
+        background: var(--primary);
+    }
+    
+    .icon-input {
+        position: relative;
+    }
+    
+    .icon-input i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray);
+    }
+    
+    .icon-input input {
+        padding-left: 2.75rem !important;
+    }
+    
+    @media (max-width: 640px) {
+        .form-body {
+            padding: 1.5rem;
+        }
+        
+        .form-footer {
+            flex-direction: column-reverse;
+            gap: 1rem;
+        }
+        
+        .btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="container mx-auto p-4 max-w-md form-container">
+    <div class="form-card">
+        <div class="form-header">
+            <h1 class="form-title">
+                {% if form.instance.pk %}Edit Goal{% else %}Create New Goal{% endif %}
+            </h1>
+            <p class="form-subtitle">
+                {% if form.instance.pk %}Update your savings target{% else %}Start your savings journey{% endif %}
+            </p>
+        </div>
+        
+        <div class="form-body">
+            <div class="progress-tracker">
+                <div class="progress-step active"></div>
+                <div class="progress-step {% if form.instance.pk %}active{% endif %}"></div>
+                <div class="progress-step"></div>
+            </div>
+            
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                
                 {% for field in form %}
-                <div>
-                    <label class="block font-medium">{{ field.label }}</label>
-                    {{ field }}
+                <div class="form-group" style="--order: {{ forloop.counter }}">
+                    <label for="{{ field.id_for_label }}" class="form-label">
+                        {{ field.label }}
+                    </label>
+                    <div class="{% if field.name == 'target_amount' %}icon-input{% endif %}">
+                        {% if field.name == 'target_amount' %}
+                        <i>₹</i>
+                        {% endif %}
+                        {{ field }}
+                    </div>
                     {% if field.errors %}
-                        <p class="text-red-500 text-sm">{{ field.errors.0 }}</p>
+                        <div class="error-message">
+                            {{ field.errors.0 }}
+                        </div>
                     {% endif %}
                 </div>
                 {% endfor %}
-            </div>
-            <div class="mt-4 flex justify-between">
-                <a href="{% url 'goals:goal_list' %}" class="text-gray-600 hover:underline">Cancel</a>
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-                    Save Goal
-                </button>
-            </div>
-        </form>
+                
+                <div class="form-footer">
+                    <a href="{% url 'goals:goal_list' %}" class="btn btn-outline">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        {% if form.instance.pk %}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        Update Goal
+                        {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                        Create Goal
+                        {% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add focus class to inputs
+        const inputs = document.querySelectorAll('.form-control');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentNode.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentNode.classList.remove('focused');
+            });
+            
+            // If there's existing value, add filled class
+            if (input.value) {
+                input.classList.add('filled');
+            }
+            
+            input.addEventListener('input', function() {
+                if (this.value) {
+                    this.classList.add('filled');
+                } else {
+                    this.classList.remove('filled');
+                }
+            });
+        });
+        
+        // Animate progress tracker when editing
+        if (document.querySelector('form[method="post"]').dataset.editing) {
+            const steps = document.querySelectorAll('.progress-step');
+            steps.forEach((step, index) => {
+                setTimeout(() => {
+                    step.classList.add('active');
+                }, index * 300);
+            });
+        }
+    });
+</script>
 {% endblock %}

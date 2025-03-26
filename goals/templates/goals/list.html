@@ -1,41 +1,393 @@
 {% block content %}
-<div class="container mx-auto p-6">
-    <h2 class="text-2xl font-semibold mb-4">Savings Goals</h2>
-    <div class="mb-4 flex justify-end">
-        <a href="{% url 'goals:goal_create' %}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Create Goal</a>
+<style>
+
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Montserrat:wght@400;600&display=swap');
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-5px); }
+        100% { transform: translateY(0px); }
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    @keyframes colorChange {
+        0% { color: #4facfe; }
+        25% { color: #00f2fe; }
+        50% { color: #667eea; }
+        75% { color: #764ba2; }
+        100% { color: #6a11cb; }
+    }
+    
+    .goal-card {
+        background: linear-gradient(135deg,rgb(46, 31, 100) 0%,rgb(69, 14, 128) 100%);
+        border-radius: 12px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+    
+    .goal-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .progress-bar-container {
+        height: 8px;
+        background-color: #e9ecef;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+        transition: width 0.6s ease;
+    }
+    
+    .action-btn {
+        transition: all 0.2s ease;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: 500;
+    }
+    
+    .edit-btn {
+        background-color: rgba(13, 110, 253, 0.1);
+        color: #0d6efd;
+    }
+    
+    .edit-btn:hover {
+        background-color: rgba(13, 110, 253, 0.2);
+    }
+    
+    .delete-btn {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+    }
+    
+    .delete-btn:hover {
+        background-color: rgba(220, 53, 69, 0.2);
+    }
+    
+    .create-btn {
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .create-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .header-cell {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        font-weight: 600;
+        padding-left: 0.9rem;
+        padding-right: 0.9rem;
+    }
+    
+    .data-cell {
+        padding-left: 0.9rem;
+        padding-right: 0.9rem;
+    }
+    
+    .amount-cell {
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+    }
+    
+    .goal-name {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    
+    .empty-state {
+        background-color: #f8f9fa;
+        color: #6c757d;
+        padding: 40px 0;
+    }
+    
+    .table-row-animation {
+        animation: fadeIn 0.4s ease-out forwards;
+        animation-delay: calc(var(--row-index) * 0.1s);
+    }
+    
+    /* Add gap between columns */
+    table {
+        border-collapse: separate;
+        border-spacing: 2.5rem;
+    }
+    
+    thead th {
+        padding-top: 0.8rem;
+        padding-bottom: 0.8rem;
+    }
+    
+    tbody td {
+        padding-top: 0.6rem;
+        padding-bottom: 0.6rem;
+        background-color: white;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    /* New Styling for Header */
+    .main-header {
+        font-family: 'Poppins', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: float 3s ease-in-out infinite, pulse 2s ease-in-out infinite;
+        position: relative;
+    }
+    
+    .main-header::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+        border-radius: 2px;
+    }
+    
+    .motivation-container {
+        background: linear-gradient(135deg,rgb(235, 202, 253) 0%, #c3cfe2 100%);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        animation: fadeIn 0.8s ease-out;
+    }
+    
+    .motivation-quote {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+        animation: colorChange 8s infinite alternate;
+    }
+    
+    .motivation-author {
+        font-style: italic;
+        color: #6c757d;
+    }
+    
+    .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: #f00;
+        opacity: 0;
+    }
+    
+    .celebration-animation {
+        animation: confettiFall 3s ease-out forwards;
+    }
+    
+    @keyframes confettiFall {
+        0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(500px) rotate(360deg); opacity: 0; }
+    }
+    
+    .progress-complete {
+        animation: pulse 1s ease-in-out infinite, colorChange 3s infinite;
+    }
+</style>
+
+<div class="container mx-auto p-6 max-w-6xl">
+    <!-- Main Header -->
+    <h1 class="main-header">YOUR SAVINGS JOURNEY</h1>
+    
+    <!-- Motivation Section -->
+    <div class="motivation-container">
+        <p class="motivation-quote">"Every rupee saved is a step closer to your dreams."</p>
+        <p class="motivation-author">- Financial Freedom</p>
     </div>
-    <div class="overflow-hidden shadow-lg rounded-lg bg-white">
-        <table class="w-full text-left border-collapse">
-            <thead>
-                <tr class="bg-gray-200">
-                    <th class="p-4">Goal Name</th>
-                    <th class="p-4">Savings Goal</th>
-                    <th class="p-4">Current Balance</th>
-                    <th class="p-4">Allocated Amount</th>
-                    <th class="p-4">Remaining Amount</th>
-                    <th class="p-4">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for goal in goals %}
-                <tr class="border-t hover:bg-gray-100 transition">
-                    <td class="p-4">{{ goal.name }}</td>
-                    <td class="p-4">Rs{{ goal.target_amount }}</td>
-                    <td class="p-4">Rs{{ goal.current_balance }}</td>
-                    <td class="p-4">Rs{{ goal.allocated_amount }}</td>
-                    <td class="p-4">Rs{{ goal.remaining_amount }}</td>
-                    <td class="p-4">
-                        <a href="{% url 'goals:goal_edit' goal.id %}" class="text-blue-600 hover:text-blue-800 mr-2">Edit</a>
-                        <a href="{% url 'goals:goal_delete' goal.id %}" class="text-red-600 hover:text-red-800">Delete</a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="6" class="p-4 text-center text-gray-500">No goals found.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    
+    <!-- Achievement Badge (hidden by default, shown via JS) -->
+    <div id="achievement-badge" class="hidden fixed top-10 right-10 bg-yellow-400 text-black px-4 py-2 rounded-full shadow-lg z-50 font-bold animate-bounce">
+        
+    </div>
+    
+    <div class="flex justify-center mb-8">
+        <a href="{% url 'goals:goal_create' %}" class="create-btn px-6 py-3 rounded-lg text-lg font-semibold transform hover:scale-105 transition-all duration-300">
+            ✨ Create New Goal ✨
+        </a>
+    </div>
+    
+    <div class="goal-card overflow-hidden p-2">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr>
+                        <th class="header-cell">Goal Name</th>
+                        <th class="header-cell">Target Amount</th>
+                        <th class="header-cell">Current Balance</th>
+                        <th class="header-cell">Last Allocated</th>
+                        <th class="header-cell">Progress</th>
+                        <th class="header-cell">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for goal in goals %}
+                    <tr class="table-row-animation" style="--row-index: {{ forloop.counter }};">
+                        <td class="data-cell goal-name">{{ goal.name }}</td>
+                        <td class="data-cell amount-cell">Rs{{ goal.target_amount|floatformat:2 }}</td>
+                        <td class="data-cell amount-cell">Rs{{ goal.current_balance|floatformat:2 }}</td>
+                        <td class="data-cell amount-cell">Rs{{ goal.allocated_amount|floatformat:2 }}</td>
+                        <td class="data-cell">
+                            <div class="progress-bar-container">
+                                <div class="progress-bar {% if goal.current_balance >= goal.target_amount %}progress-complete{% endif %}" 
+                                     style="width: {% widthratio goal.current_balance goal.target_amount 100 %}%"></div>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1 text-right">
+                                {{ goal.current_balance|floatformat:2 }} / {{ goal.target_amount|floatformat:2 }} ({% widthratio goal.current_balance goal.target_amount 100 %}%)
+                            </div>
+                        </td>
+                        <td class="data-cell">
+                            <div class="flex space-x-2">
+                                <a href="{% url 'goals:goal_edit' goal.id %}" class="action-btn edit-btn text-sm transform hover:scale-110 transition-transform">
+                                    ✏️ Edit
+                                </a>
+                                <a href="{% url 'goals:goal_delete' goal.id %}" class="action-btn delete-btn text-sm transform hover:scale-110 transition-transform">
+                                    🗑️ Delete
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="empty-state text-center p-8">
+                            <div class="text-xl mb-2">No savings goals yet</div>
+                            <p class="text-gray-500 mb-4">Your financial journey begins with the first step</p>
+                            <a href="{% url 'goals:goal_create' %}" class="create-btn inline-block px-6 py-2 rounded-lg text-sm font-semibold">
+                                🚀 Create First Goal
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Inspirational Footer -->
+    <div class="mt-8 text-center text-gray-600 italic">
+        <p>"Small savings today become big achievements tomorrow."</p>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Progress bar animation
+        const progressBars = document.querySelectorAll('.progress-bar');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const width = entry.target.style.width;
+                    entry.target.style.width = '0';
+                    setTimeout(() => {
+                        entry.target.style.width = width;
+                    }, 100);
+                }
+            });
+        }, { threshold: 0.1 });
+        progressBars.forEach(bar => observer.observe(bar));
+        
+        // Check for completed goals and celebrate
+        const completedGoals = document.querySelectorAll('.progress-complete');
+        if (completedGoals.length > 0) {
+            celebrateAchievement();
+        }
+        
+        // Random motivational quotes
+        const quotes = [
+            {text: "Financial freedom is a journey that begins with a single rupee saved.", author: "Wealth Wisdom"},
+            {text: "Don't save what is left after spending; spend what is left after saving.", author: "Warren Buffett"},
+            {text: "The secret to getting ahead is getting started.", author: "Mark Twain"},
+            {text: "Small amounts saved daily add up to big dreams realized.", author: "Financial Freedom"},
+            {text: "Every rupee you save is a vote for the future you want.", author: "Savings Proverb"}
+        ];
+        
+        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+        document.querySelector('.motivation-quote').textContent = `"${randomQuote.text}"`;
+        document.querySelector('.motivation-author').textContent = `- ${randomQuote.author}`;
+        
+        // Animate the quote
+        setInterval(() => {
+            const quoteElement = document.querySelector('.motivation-quote');
+            quoteElement.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                quoteElement.style.transform = 'scale(1)';
+            }, 300);
+        }, 10000);
+    });
+    
+    function celebrateAchievement() {
+        const badge = document.getElementById('achievement-badge');
+        badge.classList.remove('hidden');
+        
+        // Create confetti
+        for (let i = 0; i < 50; i++) {
+            createConfetti();
+        }
+        
+        // Hide badge after 5 seconds
+        setTimeout(() => {
+            badge.classList.add('hidden');
+        }, 5000);
+    }
+    
+    function createConfetti() {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        
+        // Random properties
+        const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const size = Math.random() * 10 + 5;
+        const left = Math.random() * window.innerWidth;
+        
+        confetti.style.backgroundColor = color;
+        confetti.style.width = `${size}px`;
+        confetti.style.height = `${size}px`;
+        confetti.style.left = `${left}px`;
+        confetti.style.top = '-10px';
+        
+        document.body.appendChild(confetti);
+        
+        // Add animation
+        setTimeout(() => {
+            confetti.classList.add('celebration-animation');
+        }, 10);
+        
+        // Remove after animation
+        setTimeout(() => {
+            confetti.remove();
+        }, 3000);
+    }
+</script>
 {% endblock %}
