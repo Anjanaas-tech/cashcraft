@@ -3,114 +3,1008 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Budget Tracker</title>
+    <title>Personal Budget Tracker | Financial Freedom</title>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4cc9f0;
+            --dark: #1a202c;
+            --light: #f8f9fa;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --danger: #f87171;
+        }
+        
         body {
-            font-family: 'Arial', sans-serif;
-            transition: background-color 0.3s, color 0.3s;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.5s cubic-bezier(0.65, 0.05, 0.36, 1);
+            background-color: #f8f4ff; /* Soft pastel purple background */
+            color: var(--dark);
         }
+        
         .dark-mode {
-            background-color: #1a202c;
+            background-color: #0f172a;
             color: #e2e8f0;
+            --primary: #60a5fa;
+            --secondary: #3b82f6;
+            --accent: #38bdf8;
+            --dark: #f8f9fa;
+            --light: #1e293b;
         }
+        
         .sidebar {
-            width: 250px;
-            background: #2d3748;
+            width: 280px;
+            background: linear-gradient(135deg, #a78bfa, #8b5cf6); /* Pastel purple gradient */
             color: white;
             height: 100vh;
-            padding: 20px;
+            padding: 30px 20px;
             position: fixed;
-            transition: transform 0.3s ease-in-out;
+            transition: all 0.5s cubic-bezier(0.65, 0.05, 0.36, 1);
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 100;
         }
+        
+        .sidebar:hover {
+            transform: translateX(0) scale(1.01);
+        }
+        
         .main-content {
-            margin-left: 270px;
-            padding: 20px;
+            margin-left: 300px;
+            padding: 30px;
+            transition: all 0.5s cubic-bezier(0.65, 0.05, 0.36, 1);
         }
+        
         .card {
-            transition: transform 0.3s;
+            transition: all 0.3s ease-out;
+            background: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
+        
+        .dark-mode .card {
+            background: #1e293b;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
         .card:hover {
-            transform: scale(1.05);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #a78bfa, #8b5cf6); /* Pastel purple gradient */
+        }
+        
+        .btn {
+            transition: all 0.3s ease;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.6s ease;
+        }
+        
+        .btn:hover::after {
+            left: 100%;
+        }
+        
+        .input-field {
+            transition: all 0.3s ease;
+            border: 2px solid #e2e8f0;
+            background: rgba(255, 255, 255, 0.7);
+        }
+        
+        .input-field:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+        
+        .dark-mode .input-field {
+            background-color: #334155;
+            border-color: #475569;
+            color: white;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .quote-container {
+            transition: all 0.5s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .quote-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.5s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent);
+            opacity: 0;
+        }
+        
+        .tooltip {
+            position: relative;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .dark-mode .tooltip-text {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 250px;
+            }
+            
+            .sidebar-open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-100">
-    <div class="sidebar">
-        <h2 class="text-2xl font-bold mb-6">Menu</h2>
-        <button class="block w-full text-left mb-4 bg-green-500 px-4 py-2 rounded-lg" onclick="window.location.href='{% url 'add_income' %}'">Add Income</button>
-        <button class="block w-full text-left mb-4 bg-blue-500 px-4 py-2 rounded-lg" onclick="window.location.href='{% url 'add_expense' %}'">Add Expense</button>
-        <button class="block w-full text-left mb-4 bg-yellow-500 px-4 py-2 rounded-lg" onclick="window.location.href='{% url 'goals:goal_list' %}'">View Goals</button>
-        <button class="block w-full text-left mb-4 bg-purple-500 px-4 py-2 rounded-lg" onclick="window.location.href='{% url 'edit_profile' %}'">Edit Profile</button>
-        <button class="block w-full text-left bg-gray-700 px-4 py-2 rounded-lg" onclick="toggleDarkMode()">Toggle Night Mode</button>
+<body class="bg-gradient-to-br from-purple-50 to-blue-50">
+    <!-- Mobile Menu Button -->
+    <div class="md:hidden fixed top-4 left-4 z-50">
+        <button id="mobileMenuBtn" class="p-2 rounded-lg bg-white shadow-lg text-purple-600">
+            <i class="fas fa-bars text-xl"></i>
+        </button>
     </div>
 
-    <div class="main-content">
-        <div class="header text-4xl font-bold text-blue-600 mb-4">Welcome, {{ user.first_name }} {{ user.last_name }}</div>
-        <div class="header text-4xl font-bold text-blue-600 mb-8">Personal Budget Tracker</div>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="flex items-center mb-8">
+            <i class="fas fa-wallet text-3xl mr-3 text-yellow-200"></i>
+            <h2 class="text-2xl font-bold">CashCraft</h2>
+        </div>
         
-        <!-- Input Fields -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div class="bg-white p-6 rounded-lg shadow-md card">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Expected Monthly Income:</label>
-                <input type="number" id="expectedIncome" class="w-full px-3 py-2 border rounded-lg" placeholder="Enter expected income" min="0">
+        <div class="user-info mb-8 p-4 bg-white bg-opacity-20 rounded-lg">
+            <div class="flex items-center">
+                <div class="w-12 h-12 rounded-full bg-purple-300 flex items-center justify-center text-purple-800 font-bold mr-3">
+                    {{ user.first_name|first }}{{ user.last_name|first }}
+                </div>
+                <div>
+                    <p class="font-semibold">{{ user.first_name }} {{ user.last_name }}</p>
+                    <p class="text-sm opacity-80">Premium Member</p>
+                </div>
             </div>
-            <div class="bg-white p-6 rounded-lg shadow-md card">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Expected Expenses:</label>
-                <input type="number" id="expectedExpenses" class="w-full px-3 py-2 border rounded-lg" placeholder="Enter expected expenses" min="0">
+        </div>
+        
+        <nav>
+            <button class="block w-full text-left mb-4 bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-3 rounded-lg transition-all duration-300 flex items-center" onclick="window.location.href='{% url 'add_income' %}'">
+                <i class="fas fa-money-bill-wave mr-3"></i> Add Income
+            </button>
+            <button class="block w-full text-left mb-4 bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-3 rounded-lg transition-all duration-300 flex items-center" onclick="window.location.href='{% url 'add_expense' %}'">
+                <i class="fas fa-receipt mr-3"></i> Add Expense
+            </button>
+            <button class="block w-full text-left mb-4 bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-3 rounded-lg transition-all duration-300 flex items-center" onclick="window.location.href='{% url 'goals:goal_list' %}'">
+                <i class="fas fa-bullseye mr-3"></i> View Goals
+            </button>
+            <button class="block w-full text-left mb-4 bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-3 rounded-lg transition-all duration-300 flex items-center" onclick="window.location.href='{% url 'edit_profile' %}'">
+                <i class="fas fa-user-edit mr-3"></i> Edit Profile
+            </button>
+            <button class="block w-full text-left mb-4 bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-3 rounded-lg transition-all duration-300 flex items-center" onclick="toggleDarkMode()">
+                <i class="fas fa-moon mr-3"></i> Toggle Night Mode
+            </button>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="block w-full text-left bg-red-500 hover:bg-red-600 px-4 py-3 rounded-lg transition-all duration-300 flex items-center">
+                    <i class="fas fa-sign-out-alt mr-3"></i> Logout
+                </button>
+            </form>
+            
+        </nav>
+        
+        <div class="mt-auto pt-6">
+            <div class="quote-container text-sm italic opacity-80 mb-4" id="dailyQuote">
+                "Financial freedom is available to those who learn about it and work for it."
             </div>
-            <div class="bg-white p-6 rounded-lg shadow-md card">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Savings Goal:</label>
-                <input type="number" id="savingsGoal" class="w-full px-3 py-2 border rounded-lg" placeholder="Enter savings goal" min="0">
+            <div class="text-xs opacity-60">
+                Last updated: <span id="currentDate"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Header with Animation -->
+        <div class="header mb-8">
+            <h1 class="text-5xl font-bold text-black bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500 mb-2">Welcome back, <span class="floating inline-block">{{ user.first_name }}</span>!</h1>
+            <p class="text-xl text-purple-700 dark:text-purple-300">Track your finances and achieve your goals</p>
+        </div>
+        
+        <!-- Motivational Banner -->
+        <div class="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-6 rounded-xl mb-8 shadow-lg relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-white bg-opacity-10 rounded-full -mr-10 -mt-10"></div>
+            <div class="absolute bottom-0 left-0 w-20 h-20 bg-white bg-opacity-10 rounded-full -ml-10 -mb-10"></div>
+            <h2 class="text-2xl font-bold mb-2 relative z-10">Today's Financial Tip</h2>
+            <p class="relative z-10" id="financialTip">Pay yourself first. Automate your savings to build wealth effortlessly.</p>
+            <button class="mt-4 bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold hover:bg-opacity-90 transition relative z-10" onclick="showRandomTip()">
+                Show Another Tip
+            </button>
+        </div>
+        
+        <!-- Input Cards with Animated Icons -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="card group">
+                <div class="p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-300 mr-4 group-hover:rotate-12 transition-transform">
+                            <i class="fas fa-money-bill-trend-up text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold">Expected Income</h3>
+                    </div>
+                    <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Monthly Amount (₹)</label>
+                    <input type="number" id="expectedIncome" class="w-full px-4 py-3 rounded-lg input-field focus:outline-none" placeholder="0.00" min="0">
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Your projected monthly earnings</p>
+                </div>
+            </div>
+            
+            <div class="card group">
+                <div class="p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center text-red-600 dark:text-red-300 mr-4 group-hover:rotate-12 transition-transform">
+                            <i class="fas fa-cart-shopping text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold">Expected Expenses</h3>
+                    </div>
+                    <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Monthly Amount (₹)</label>
+                    <input type="number" id="expectedExpenses" class="w-full px-4 py-3 rounded-lg input-field focus:outline-none" placeholder="0.00" min="0">
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Your estimated monthly spending</p>
+                </div>
+            </div>
+            
+            <div class="card group pulse">
+                <div class="p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center text-green-600 dark:text-green-300 mr-4 group-hover:rotate-12 transition-transform">
+                            <i class="fas fa-piggy-bank text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold">Savings Goal</h3>
+                    </div>
+                    <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Monthly Target (₹)</label>
+                    <input type="number" id="savingsGoal" class="w-full px-4 py-3 rounded-lg input-field focus:outline-none" placeholder="0.00" min="0">
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">How much you want to save</p>
+                </div>
             </div>
         </div>
 
-    
-        <!-- Report Section with Export Feature -->
-        <div class="bg-white p-6 rounded-lg shadow-md mt-8 card">
-            <h3 class="text-2xl font-semibold mb-4">Budget Report</h3>
-            <div id="report" class="text-gray-700"></div>
-            <button class="mt-4 bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600" onclick="generateReport()">Generate Report</button>
-            <button class="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" onclick="exportPDF()">Download as PDF</button>
+        <!-- Report Section -->
+        <div class="card mb-8 transform transition-all hover:shadow-xl">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-2xl font-semibold">Budget Report</h3>
+                    <div class="flex space-x-2">
+                        <button class="btn bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center" onclick="generateReport()">
+                            <i class="fas fa-calculator mr-2"></i> Generate
+                        </button>
+                        <button class="btn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center" onclick="exportPDF()">
+                            <i class="fas fa-file-pdf mr-2"></i> Export PDF
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="report" class="text-gray-700 dark:text-gray-300 space-y-3">
+                    <div class="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <span>Enter your financial details and generate a report</span>
+                        <i class="fas fa-arrow-right text-purple-500"></i>
+                    </div>
+                </div>
+                
+                <div class="mt-6 bg-purple-50 dark:bg-purple-900 dark:bg-opacity-30 p-4 rounded-lg border border-purple-200 dark:border-purple-800">
+                    <h4 class="font-semibold text-purple-800 dark:text-purple-200 mb-2 flex items-center">
+                        <i class="fas fa-lightbulb mr-2"></i> Quick Insight
+                    </h4>
+                    <p class="text-sm text-purple-700 dark:text-purple-300" id="quickInsight">
+                        A budget is telling your money where to go instead of wondering where it went.
+                    </p>
+                </div>
+            </div>
         </div>
-
         
+        
+        <!-- Visual Progress Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="card">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold mb-4">Savings Progress</h3>
+                    <div class="flex items-center justify-center">
+                        <svg class="w-48 h-48" viewBox="0 0 100 100">
+                            <circle class="text-gray-200 dark:text-gray-700" stroke-width="8" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50" />
+                            <circle class="progress-ring__circle text-purple-500" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50" id="savingsProgress" />
+                            <text x="50" y="50" font-family="Arial" font-size="14" text-anchor="middle" alignment-baseline="middle" class="fill-current text-gray-800 dark:text-gray-200" id="savingsPercent">0%</text>
+                        </svg>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button class="btn bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-lg" onclick="calculateProgress()">
+                            Calculate Progress
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold mb-4">Budget Breakdown</h3>
+                    <div id="chart" class="min-h-[200px]"></div>
+                    <div class="flex justify-center space-x-4 mt-4">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-blue-500 rounded-full mr-2"></div>
+                            <span class="text-sm">Income</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
+                            <span class="text-sm">Expenses</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
+                            <span class="text-sm">Savings</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+        <!-- Motivational Quotes Carousel -->
+        <div class="card">
+            <div class="p-6">
+                <h3 class="text-xl font-semibold mb-4 flex items-center">
+                    <i class="fas fa-quote-left text-purple-500 mr-2"></i> Words of Wisdom
+                </h3>
+                <div class="relative h-32 overflow-hidden">
+                    <div class="absolute inset-0 flex items-center justify-center transition-all duration-500 opacity-0" id="quote1">
+                        <blockquote class="text-center">
+                            <p class="text-lg italic">"Do not save what is left after spending, but spend what is left after saving."</p>
+                            <footer class="mt-2 text-sm text-gray-600 dark:text-gray-400">— Warren Buffett</footer>
+                        </blockquote>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center transition-all duration-500 opacity-0" id="quote2">
+                        <blockquote class="text-center">
+                            <p class="text-lg italic">"Financial peace isn't the acquisition of stuff. It's learning to live on less than you make."</p>
+                            <footer class="mt-2 text-sm text-gray-600 dark:text-gray-400">— Dave Ramsey</footer>
+                        </blockquote>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center transition-all duration-500 opacity-0" id="quote3">
+                        <blockquote class="text-center">
+                            <p class="text-lg italic">"The habit of saving is itself an education; it fosters every virtue, teaches self-denial, cultivates the sense of order."</p>
+                            <footer class="mt-2 text-sm text-gray-600 dark:text-gray-400">— T.T. Munger</footer>
+                        </blockquote>
+                    </div>
+                </div>
+                <div class="flex justify-center mt-4 space-x-2">
+                    <button class="w-3 h-3 rounded-full bg-purple-300 hover:bg-purple-500 transition" onclick="showQuote(1)"></button>
+                    <button class="w-3 h-3 rounded-full bg-purple-300 hover:bg-purple-500 transition" onclick="showQuote(2)"></button>
+                    <button class="w-3 h-3 rounded-full bg-purple-300 hover:bg-purple-500 transition" onclick="showQuote(3)"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="fixed bottom-4 right-4 transition-all transform translate-y-20 opacity-0" id="toast">
+        <div class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span id="toastMessage">Report generated successfully!</span>
+        </div>
     </div>
 
     <script>
+        // Initialize GSAP animations
+        gsap.registerEffect({
+            name: "fadeIn",
+            effect: (targets, config) => {
+                return gsap.from(targets, { 
+                    opacity: 0, 
+                    y: 20, 
+                    duration: 0.8, 
+                    ease: "power2.out",
+                    stagger: 0.1 
+                });
+            },
+            defaults: { duration: 1 }
+        });
+        
+        // Set current date
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('sidebar-open');
+        });
+        
+        // Dark mode toggle
         function toggleDarkMode() {
             document.body.classList.toggle("dark-mode");
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+            
+            // Animate the toggle
+            gsap.fromTo("body", 
+                { backgroundColor: document.body.classList.contains('dark-mode') ? '#f8f4ff' : '#0f172a' },
+                { backgroundColor: document.body.classList.contains('dark-mode') ? '#0f172a' : '#f8f4ff', duration: 0.5 }
+            );
         }
-
+        
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+        
+        // Financial tips array
+        const financialTips = [
+            "Automate your savings to build wealth effortlessly.",
+            "Track every expense for a month to identify spending patterns.",
+            "The 50/30/20 rule: 50% needs, 30% wants, 20% savings.",
+            "Invest in knowledge - the best investment you can make.",
+            "Build an emergency fund covering 3-6 months of expenses.",
+            "Pay off high-interest debt before focusing on investments.",
+            "Review your budget monthly and adjust as needed.",
+            "Small daily savings add up to significant amounts over time."
+        ];
+        
+        // Motivational quotes
+        const quotes = [
+            "Financial freedom is freedom from fear.",
+            "A penny saved is a penny earned.",
+            "Wealth is not about having money, it's about having options.",
+            "Budgeting has only one rule: Don't go over budget.",
+            "The art is not in making money, but in keeping it.",
+            "Every rupee you save today is a rupee you can invest tomorrow.",
+            "Financial peace begins with a well-planned budget.",
+            "Small amounts saved daily become large amounts over time."
+        ];
+        
+        // Show random financial tip
+        function showRandomTip() {
+            const randomTip = financialTips[Math.floor(Math.random() * financialTips.length)];
+            document.getElementById('financialTip').textContent = randomTip;
+            
+            // Animate the change
+            gsap.fromTo("#financialTip", 
+                { opacity: 0, y: 10 },
+                { opacity: 1, y: 0, duration: 0.5 }
+            );
+        }
+        
+        // Show random daily quote
+        function showDailyQuote() {
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            const quoteElement = document.getElementById('dailyQuote');
+            
+            // Animate out
+            gsap.to(quoteElement, {
+                opacity: 0,
+                y: -10,
+                duration: 0.3,
+                onComplete: () => {
+                    quoteElement.textContent = `"${randomQuote}"`;
+                    // Animate in
+                    gsap.to(quoteElement, {
+                        opacity: 0.8,
+                        y: 0,
+                        duration: 0.5
+                    });
+                }
+            });
+        }
+        
+        // Show specific quote in carousel
+        let currentQuote = 1;
+        function showQuote(quoteNum) {
+            currentQuote = quoteNum;
+            for (let i = 1; i <= 3; i++) {
+                const quote = document.getElementById(`quote${i}`);
+                if (i === quoteNum) {
+                    gsap.to(quote, { opacity: 1, duration: 0.5 });
+                } else {
+                    gsap.to(quote, { opacity: 0, duration: 0.5 });
+                }
+            }
+        }
+        
+        // Auto-rotate quotes
+        setInterval(() => {
+            currentQuote = currentQuote % 3 + 1;
+            showQuote(currentQuote);
+        }, 8000);
+        
+        // Calculate savings progress
+        function calculateProgress() {
+            let income = parseFloat(document.getElementById("expectedIncome").value) || 0;
+            let expenses = parseFloat(document.getElementById("expectedExpenses").value) || 0;
+            let savingsGoal = parseFloat(document.getElementById("savingsGoal").value) || 0;
+            
+            if (income === 0) {
+                showToast("Please enter your expected income first");
+                return;
+            }
+            
+            let actualSavings = income - expenses;
+            let progressPercentage = Math.min(Math.round((actualSavings / savingsGoal) * 100), 100);
+            
+            if (savingsGoal === 0) {
+                progressPercentage = 0;
+            }
+            
+            document.getElementById("savingsPercent").textContent = `${progressPercentage}%`;
+            
+            // Animate the progress circle
+            const circle = document.getElementById("savingsProgress");
+            const radius = circle.r.baseVal.value;
+            const circumference = 2 * Math.PI * radius;
+            const offset = circumference - (progressPercentage / 100) * circumference;
+            
+            circle.style.strokeDasharray = `${circumference} ${circumference}`;
+            circle.style.strokeDashoffset = circumference;
+            
+            gsap.to(circle, {
+                strokeDashoffset: offset,
+                duration: 1.5,
+                ease: "elastic.out(1, 0.5)"
+            });
+            
+            // Update charts
+            updateChart(income, expenses, actualSavings);
+            updateTrendChart('monthly');
+        }
+        
+        // Update donut chart data
+        function updateChart(income, expenses, savings) {
+            const options = {
+                series: [income, expenses, savings],
+                chart: {
+                    type: 'donut',
+                    height: 300
+                },
+                labels: ['Income', 'Expenses', 'Savings'],
+                colors: ['#4361ee', '#f87171', '#4ade80'],
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }],
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            labels: {
+                                show: true,
+                                total: {
+                                    show: true,
+                                    label: 'Total',
+                                    formatter: function (w) {
+                                        return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            
+            const chart = new ApexCharts(document.querySelector("#chart"), options);
+            chart.render();
+        }
+        
+        // Initialize trend chart
+        let trendChart;
+        function initializeTrendChart() {
+            const options = {
+                series: [{
+                    name: 'Income',
+                    data: [30000, 32000, 35000, 38000, 40000, 42000, 45000]
+                }, {
+                    name: 'Expenses',
+                    data: [22000, 24000, 26000, 28000, 30000, 32000, 34000]
+                }, {
+                    name: 'Savings',
+                    data: [8000, 8000, 9000, 10000, 10000, 10000, 11000]
+                }],
+                chart: {
+                    type: 'area',
+                    height: 350,
+                    stacked: false,
+                    animations: {
+                        enabled: true,
+                        easing: 'easeinout',
+                        speed: 800
+                    },
+                    toolbar: {
+                        show: true
+                    }
+                },
+                colors: ['#4361ee', '#f87171', '#4ade80'],
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 2
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        opacityFrom: 0.6,
+                        opacityTo: 0.8,
+                    }
+                },
+                legend: {
+                    position: 'top',
+                    horizontalAlign: 'center'
+                },
+                xaxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                    labels: {
+                        style: {
+                            colors: document.body.classList.contains('dark-mode') ? '#e2e8f0' : '#1a202c'
+                        }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        style: {
+                            colors: document.body.classList.contains('dark-mode') ? '#e2e8f0' : '#1a202c'
+                        },
+                        formatter: function (value) {
+                            return '₹' + value.toLocaleString();
+                        }
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (value) {
+                            return '₹' + value.toLocaleString();
+                        }
+                    }
+                }
+            };
+            
+            trendChart = new ApexCharts(document.querySelector("#trendChart"), options);
+            trendChart.render();
+        }
+        
+        // Update trend chart based on time period
+        function updateTrendChart(period) {
+            let categories, incomeData, expensesData, savingsData;
+            
+            switch(period) {
+                case 'monthly':
+                    categories = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'];
+                    incomeData = [30000, 32000, 35000, 38000, 40000, 42000, 45000];
+                    expensesData = [22000, 24000, 26000, 28000, 30000, 32000, 34000];
+                    savingsData = [8000, 8000, 9000, 10000, 10000, 10000, 11000];
+                    break;
+                case 'quarterly':
+                    categories = ['Q1', 'Q2', 'Q3', 'Q4'];
+                    incomeData = [32000, 38000, 42000, 48000];
+                    expensesData = [24000, 28000, 32000, 36000];
+                    savingsData = [8000, 10000, 10000, 12000];
+                    break;
+                case 'yearly':
+                    categories = ['2020', '2021', '2022', '2023'];
+                    incomeData = [350000, 420000, 480000, 520000];
+                    expensesData = [300000, 340000, 380000, 400000];
+                    savingsData = [50000, 80000, 100000, 120000];
+                    break;
+            }
+            
+            trendChart.updateOptions({
+                xaxis: {
+                    categories: categories
+                },
+                series: [{
+                    name: 'Income',
+                    data: incomeData
+                }, {
+                    name: 'Expenses',
+                    data: expensesData
+                }, {
+                    name: 'Savings',
+                    data: savingsData
+                }]
+            });
+        }
+        
+        // Generate report
         function generateReport() {
             let income = parseFloat(document.getElementById("expectedIncome").value) || 0;
             let expenses = parseFloat(document.getElementById("expectedExpenses").value) || 0;
-            let savings = parseFloat(document.getElementById("savingsGoal").value) || 0;
+            let savingsGoal = parseFloat(document.getElementById("savingsGoal").value) || 0;
             let balance = income - expenses;
-            let status = balance >= savings ? "On Track!" : "Needs Improvement!";
+            let status = balance >= savingsGoal ? "On Track!" : "Needs Improvement!";
             
+            // Determine status color
+            let statusColor = balance >= savingsGoal ? "text-green-500" : "text-red-500";
+            
+            // Create report HTML
             document.getElementById("report").innerHTML = `
-                <p><strong>Expected Income:</strong> ₹${income}</p>
-                <p><strong>Expected Expenses:</strong> ₹${expenses}</p>
-                <p><strong>Savings Goal:</strong> ₹${savings}</p>
-                <p><strong>Balance After Expenses:</strong> ₹${balance}</p>
-                <p><strong>Status:</strong> ${status}</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                        <p class="font-semibold">Expected Income:</p>
+                        <p class="text-2xl font-bold text-blue-500">₹${income.toLocaleString()}</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                        <p class="font-semibold">Expected Expenses:</p>
+                        <p class="text-2xl font-bold text-red-500">₹${expenses.toLocaleString()}</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                        <p class="font-semibold">Savings Goal:</p>
+                        <p class="text-2xl font-bold text-green-500">₹${savingsGoal.toLocaleString()}</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                        <p class="font-semibold">Projected Balance:</p>
+                        <p class="text-2xl font-bold ${balance >= 0 ? 'text-blue-500' : 'text-red-500'}">₹${balance.toLocaleString()}</p>
+                    </div>
+                </div>
+                <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg text-center">
+                    <p class="font-semibold">Status:</p>
+                    <p class="text-xl ${statusColor} font-bold">${status}</p>
+                </div>
             `;
+            
+            // Generate quick insight
+            let insight = "";
+            if (balance < 0) {
+                insight = "You're spending more than you earn. Consider reducing expenses or increasing income.";
+            } else if (balance >= savingsGoal) {
+                insight = "Great job! You're meeting your savings goal. Consider investing your surplus.";
+            } else if (balance > 0) {
+                insight = "You're saving money but not reaching your goal. Look for areas to cut expenses.";
+            } else {
+                insight = "Every financial journey begins with awareness. Keep tracking to improve your finances.";
+            }
+            
+            document.getElementById("quickInsight").textContent = insight;
+            
+            // Show toast notification
+            showToast("Report generated successfully!");
+            
+            // Create confetti effect if on track
+            if (balance >= savingsGoal && savingsGoal > 0) {
+                createConfetti();
+            }
+            
+            // Calculate progress
+            calculateProgress();
         }
-
+        
+        // Export PDF
         function exportPDF() {
             const { jsPDF } = window.jspdf;
             let doc = new jsPDF();
-            doc.text("Personal Budget Report", 10, 10);
-            doc.text(document.getElementById("report").innerText, 10, 20);
+            
+            // Add title
+            doc.setFontSize(20);
+            doc.setTextColor(99, 102, 241);
+            doc.text("Personal Budget Report", 105, 20, null, null, 'center');
+            
+            // Add date
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 105, 30, null, null, 'center');
+            
+            // Add user info
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`User: {{ user.first_name }} {{ user.last_name }}`, 20, 40);
+            
+            // Add report content
+            const reportText = document.getElementById("report").innerText;
+            const splitText = doc.splitTextToSize(reportText, 170);
+            doc.text(splitText, 20, 50);
+            
+            // Add quick insight
+            doc.setFontSize(12);
+            doc.setTextColor(99, 102, 241);
+            doc.text("Quick Insight:", 20, doc.autoTable.previous.finalY + 10);
+            doc.setTextColor(0, 0, 0);
+            doc.text(document.getElementById("quickInsight").innerText, 20, doc.autoTable.previous.finalY + 20);
+            
+            // Save the PDF
             doc.save("budget_report.pdf");
+            
+            // Show toast notification
+            showToast("PDF exported successfully!");
         }
-
         
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            document.getElementById("toastMessage").textContent = message;
+            
+            // Animate in
+            gsap.to(toast, {
+                y: 0,
+                opacity: 1,
+                duration: 0.5,
+                ease: "power2.out",
+                onComplete: () => {
+                    // Animate out after delay
+                    setTimeout(() => {
+                        gsap.to(toast, {
+                            y: 20,
+                            opacity: 0,
+                            duration: 0.5,
+                            ease: "power2.in"
+                        });
+                    }, 3000);
+                }
+            });
+        }
+        
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#a78bfa', '#8b5cf6', '#c4b5fd', '#a855f7', '#d8b4fe'];
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                document.body.appendChild(confetti);
+                
+                // Animate confetti
+                gsap.to(confetti, {
+                    y: Math.random() * -500 - 100,
+                    x: Math.random() * 200 - 100,
+                    opacity: 1,
+                    duration: 1.5,
+                    ease: "power1.out",
+                    onComplete: () => {
+                        confetti.remove();
+                    }
+                });
+            }
+        }
+        
+        // Initialize animations on load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animate sidebar items
+            gsap.from(".sidebar button", {
+                opacity: 0,
+                x: -20,
+                duration: 0.6,
+                stagger: 0.1,
+                delay: 0.3
+            });
+            
+            // Animate cards
+            gsap.from(".card", {
+                opacity: 0,
+                y: 30,
+                duration: 0.8,
+                stagger: 0.1,
+                delay: 0.6,
+                ease: "back.out(1.7)"
+            });
+            
+            // Show first quote
+            showQuote(1);
+            
+            // Show random daily quote
+            showDailyQuote();
+            
+            // Rotate quotes every 8 seconds
+            setInterval(showDailyQuote, 24000);
+            
+            // Add hover effects to buttons
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('mouseenter', () => {
+                    gsap.to(btn, { 
+                        y: -2, 
+                        duration: 0.2,
+                        boxShadow: '0 5px 15px rgba(0,0,0,0.1)'
+                    });
+                });
+                btn.addEventListener('mouseleave', () => {
+                    gsap.to(btn, { 
+                        y: 0, 
+                        duration: 0.2,
+                        boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+                    });
+                });
+            });
+            
+            // Initialize trend chart
+            initializeTrendChart();
+        });
     </script>
 </body>
 </html>

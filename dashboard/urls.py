@@ -7,5 +7,6 @@ urlpatterns = [
     path("add-expense/", views.add_expense, name="add_expense"),
     path('update-financials/', views.update_financials, name='update_financials'),
     path("goals/", views.add_expense, name="list"),
+    
 
 ]
