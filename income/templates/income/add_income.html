@@ -1,0 +1,687 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Income Tracker Pro | Financial Dashboard</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --accent: #4cc9f0;
+            --success: #38b000;
+            --warning: #ff9e00;
+            --danger: #d00000;
+            --dark: #212529;
+            --light: #f8f9fa;
+            --gradient: linear-gradient(135deg, var(--primary), var(--accent));
+            --glass: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --gold: #F59E0B;
+            --rupee: #16A34A;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0F172A, #1E293B);
+            color: var(--light);
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: floatParticle 15s infinite linear;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) scale(0.5);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.1;
+            }
+            90% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateY(-100px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Main Container */
+        .tracker-container {
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            position: relative;
+            margin: 40px auto;
+            max-width: 650px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .tracker-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Header with Shine Effect */
+        .tracker-header {
+            background: var(--gradient);
+            color: white;
+            padding: 30px;
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Playfair Display', serif;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .tracker-header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255,255,255,0.3) 0%,
+                rgba(255,255,255,0) 60%
+            );
+            transform: rotate(30deg);
+            animation: shine 8s infinite linear;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+
+        /* Motivational Elements */
+        .motivational-section {
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(76, 201, 240, 0.1));
+            border-radius: 16px;
+            margin: 25px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+
+        .motivational-quote {
+            font-size: 1.3rem;
+            font-style: italic;
+            text-align: center;
+            color: var(--light);
+            margin: 0;
+            position: relative;
+            z-index: 2;
+            transition: all 0.5s ease;
+            line-height: 1.6;
+        }
+
+        .quote-author {
+            display: block;
+            margin-top: 15px;
+            font-weight: 600;
+            color: var(--gold);
+            font-style: normal;
+            font-size: 1rem;
+        }
+
+        .motivational-section::before {
+            content: "“";
+            position: absolute;
+            top: 0;
+            left: 20px;
+            font-family: 'Playfair Display', serif;
+            font-size: 120px;
+            color: rgba(67, 97, 238, 0.05);
+            line-height: 1;
+            z-index: 1;
+        }
+
+        /* Form Elements */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 0 25px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .rupee-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--rupee);
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px 15px 14px 40px;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(30, 41, 59, 0.8);
+            color: var(--light);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:not(#amountInput) {
+            padding-left: 15px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+            background: rgba(30, 41, 59, 1);
+        }
+
+        input:hover, select:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .input-hint {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 8px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        input.error {
+            border-color: var(--error) !important;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        /* Button Group with View Income List Button */
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 25px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button, .action-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 16px;
+            text-align: center;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            margin: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before, .action-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.5s ease;
+        }
+
+        button:hover::before, .action-btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-success:hover {
+            background: #2d9600;
+            box-shadow: 0 5px 15px rgba(56, 176, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-view {
+            background: linear-gradient(135deg, var(--accent), #3B82F6);
+        }
+
+        .btn-view:hover {
+            background: linear-gradient(135deg, #3B82F6, var(--accent));
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-dashboard {
+            background: linear-gradient(135deg, #7C3AED, #9333EA);
+        }
+
+        .btn-dashboard:hover {
+            background: linear-gradient(135deg, #9333EA, #7C3AED);
+            box-shadow: 0 5px 15px rgba(124, 58, 237, 0.3);
+            transform: translateY(-2px);
+        }
+
+        
+        /* Confetti Effect */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary);
+            opacity: 0;
+            z-index: 9999;
+            animation: confetti 3s ease-in-out;
+        }
+
+        @keyframes confetti {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Floating Rupee Symbols */
+        .floating-rupees {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .rupee-symbol {
+            position: absolute;
+            color: var(--rupee);
+            opacity: 0.1;
+            font-family: 'Playfair Display', serif;
+            font-weight: bold;
+            animation: floatRupee 15s linear infinite;
+        }
+
+        @keyframes floatRupee {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.1;
+            }
+            90% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .tracker-container {
+                margin: 20px;
+                border-radius: 16px;
+            }
+            
+            .tracker-header {
+                font-size: 1.8rem;
+                padding: 25px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            button, .action-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .tracker-header {
+                font-size: 1.6rem;
+                padding: 20px;
+            }
+            
+            .motivational-quote {
+                font-size: 1.1rem;
+            }
+            
+            input, select {
+                padding: 12px 15px 12px 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Particles Background -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Floating Rupee Symbols -->
+    <div class="floating-rupees" id="rupeeContainer"></div>
+    
+    <!-- Main Container -->
+    <div class="tracker-container">
+        <!-- Header with Shine Effect -->
+        <div class="tracker-header">
+            <i class="fas fa-coins"></i> Add New Income
+        </div>
+        
+        <!-- Motivational Section -->
+        <div class="motivational-section">
+            <p class="motivational-quote">
+                "Financial freedom begins with awareness. Track every rupee to build your wealth."
+                <span class="quote-author">— Ratan Tata</span>
+            </p>
+        </div>
+        
+        <!-- Income Form -->
+        <form method="POST" id="incomeForm">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="amount"><i class="fas fa-coins"></i> Amount (₹)</label>
+                <div class="input-container">
+                    <span class="rupee-icon">₹</span>
+                    <input type="number" name="amount" step="1" min="1" required 
+                           placeholder="e.g. 15000" id="amountInput">
+                </div>
+                <span class="input-hint">Example: 25000 (must be at least ₹1)</span>
+                <span class="error-message" id="amountError">Amount must be at least ₹1</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="date"><i class="far fa-calendar-alt"></i> Date</label>
+                <input type="date" name="date" required 
+                       placeholder="Select date" id="dateInput">
+                <span class="input-hint">Example: 15/05/2023</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="category"><i class="fas fa-tags"></i> Category</label>
+                <input type="text" name="category" value="Uncategorized" 
+                       placeholder="e.g. Salary, Freelance, Business" id="categoryInput">
+                <span class="input-hint">Example: Freelance Project</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="source"><i class="fas fa-building"></i> Source</label>
+                <input type="text" name="source" value="Unknown" 
+                       placeholder="e.g. Company Name, Client" id="sourceInput">
+                <span class="input-hint">Example: Infosys Ltd.</span>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    <i class="fas fa-plus-circle"></i> Add Income
+                </button>
+                <a href="{% url 'income_list' %}" class="action-btn btn-view">
+                    <i class="fas fa-list"></i> View Income List
+                </a>
+                <a href="{% url 'dashboard' %}" class="action-btn btn-dashboard">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+            </div>
+        </form>
+        
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Create floating particles
+            const particleContainer = document.getElementById('particles');
+            const colors = ['var(--primary)', 'var(--accent)', 'var(--success)', 'var(--warning)'];
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.width = (Math.random() * 15 + 5) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.opacity = Math.random() * 0.2 + 0.05;
+                particle.style.animationDuration = (Math.random() * 15 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particleContainer.appendChild(particle);
+            }
+            
+            // Create floating rupee symbols
+            const rupeeContainer = document.getElementById('rupeeContainer');
+            for (let i = 0; i < 20; i++) {
+                const rupee = document.createElement('div');
+                rupee.className = 'rupee-symbol';
+                rupee.textContent = '₹';
+                rupee.style.left = Math.random() * 100 + 'vw';
+                rupee.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                rupee.style.animationDelay = Math.random() * 15 + 's';
+                rupee.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                rupeeContainer.appendChild(rupee);
+            }
+            
+            // Amount validation
+            const amountInput = document.getElementById('amountInput');
+            const amountError = document.getElementById('amountError');
+            
+            amountInput.addEventListener('input', function() {
+                if (parseFloat(this.value) < 1 && this.value !== '') {
+                    this.classList.add('error');
+                    amountError.style.display = 'block';
+                } else {
+                    this.classList.remove('error');
+                    amountError.style.display = 'none';
+                }
+            });
+            
+            // Form submission validation
+            const form = document.getElementById('incomeForm');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            form.addEventListener('submit', function(e) {
+                // Validate amount
+                if (parseFloat(amountInput.value) < 1) {
+                    e.preventDefault();
+                    amountInput.classList.add('error');
+                    amountError.style.display = 'block';
+                    return false;
+                }
+                
+                // If validation passes, proceed with submission
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                
+                // Create golden confetti for Indian theme
+                createConfetti();
+                
+                // Simulate processing delay
+                setTimeout(() => {
+                    submitBtn.innerHTML = '<i class="fas fa-check"></i> Success!';
+                }, 1500);
+            });
+            
+            function createConfetti() {
+                const colors = ['var(--gold)', 'var(--rupee)', 'var(--primary)', 'var(--accent)'];
+                
+                for (let i = 0; i < 100; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.top = -10 + 'px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = Math.random() * 8 + 5 + 'px';
+                    confetti.style.height = Math.random() * 8 + 5 + 'px';
+                    confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    document.body.appendChild(confetti);
+                    
+                    // Remove confetti after animation
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3000);
+                }
+            }
+            
+            // Random Indian financial quotes
+            const quotes = [
+                {
+                    text: "Do not save what is left after spending, but spend what is left after saving.",
+                    author: "Warren Buffett"
+                },
+                {
+                    text: "Small savings today lead to big fortunes tomorrow. Start with just ₹100.",
+                    author: "Nirmala Sitharaman"
+                },
+                {
+                    text: "The art is not in making money, but in keeping it with proper accounting.",
+                    author: "Dhirubhai Ambani"
+                },
+                {
+                    text: "Invest in yourself first. The returns are always the highest.",
+                    author: "N. R. Narayana Murthy"
+                },
+                {
+                    text: "Financial freedom is when your passive income exceeds your expenses.",
+                    author: "Radhika Gupta"
+                },
+                {
+                    text: "Every rupee saved is a rupee earned for your future self.",
+                    author: "Indian Proverb"
+                }
+            ];
+            
+            // Rotate quotes every 8 seconds
+            let quoteIndex = 0;
+            const quoteElement = document.querySelector('.motivational-quote');
+            const authorElement = document.querySelector('.quote-author');
+            
+            function changeQuote() {
+                quoteElement.style.animation = 'fadeOut 0.5s forwards';
+                authorElement.style.animation = 'fadeOut 0.5s forwards';
+                
+                setTimeout(() => {
+                    quoteIndex = (quoteIndex + 1) % quotes.length;
+                    quoteElement.textContent = `"${quotes[quoteIndex].text}"`;
+                    authorElement.textContent = `— ${quotes[quoteIndex].author}`;
+                    
+                    quoteElement.style.animation = 'fadeIn 0.5s forwards';
+                    authorElement.style.animation = 'fadeIn 0.5s forwards';
+                }, 500);
+            }
+            
+            // Start quote rotation
+            setInterval(changeQuote, 8000);
+            
+            // Add confetti style
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes fadeOut {
+                    from { opacity: 1; }
+                    to { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>

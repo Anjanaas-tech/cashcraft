@@ -1,9 +1,12 @@
 from django.db import models
-from django.conf import settings
+from accounts.models import User
 
 class Income(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    category = models.CharField(max_length=100, default='General')  # <== THIS MUST EXIST
-    item = models.CharField(max_length=200, blank=True, null=True)  # <== ITEM FIELD
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField()
+    category = models.CharField(max_length=100, default='Uncategorized')
+    source = models.CharField(max_length=100, default='Unknown')
+
+    def __str__(self):
+       return f"{self.source} - {self.amount}"

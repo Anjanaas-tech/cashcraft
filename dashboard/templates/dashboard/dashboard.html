@@ -12,9 +12,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4361ee;
+            --primary:rgb(58, 20, 171);
             --secondary: #3f37c9;
-            --accent: #4cc9f0;
+            --accent:rgb(99, 10, 134);
             --dark: #1a202c;
             --light: #f8f9fa;
             --success: #4ade80;
@@ -241,12 +241,21 @@
         
         <div class="user-info mb-8 p-4 bg-white bg-opacity-20 rounded-lg">
             <div class="flex items-center">
-                <div class="w-12 h-12 rounded-full bg-purple-300 flex items-center justify-center text-purple-800 font-bold mr-3">
-                    {{ user.first_name|first }}{{ user.last_name|first }}
+                <div class="relative w-14 h-14 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white font-bold mr-3 shadow-lg">
+                    <!-- User initials -->
+                    <span class="z-10">{{ user.first_name|first }}{{ user.last_name|first }}</span>
+                    
+                    <!-- Icon inside circle -->
+                    <div class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-yellow-400 flex items-center justify-center text-xs">
+                        <i class="fas fa-crown text-yellow-800"></i>
+                    </div>
                 </div>
                 <div>
                     <p class="font-semibold">{{ user.first_name }} {{ user.last_name }}</p>
-                    <p class="text-sm opacity-80">Premium Member</p>
+                    <p class="text-sm opacity-80 flex items-center">
+                        <span>Premium Member</span>
+                        <i class="fas fa-check-circle ml-2 text-green-400"></i>
+                    </p>
                 </div>
             </div>
         </div>
@@ -359,9 +368,7 @@
                         <button class="btn bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center" onclick="generateReport()">
                             <i class="fas fa-calculator mr-2"></i> Generate
                         </button>
-                        <button class="btn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center" onclick="exportPDF()">
-                            <i class="fas fa-file-pdf mr-2"></i> Export PDF
-                        </button>
+                        
                     </div>
                 </div>
                 

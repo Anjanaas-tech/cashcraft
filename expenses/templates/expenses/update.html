@@ -1,9 +1,453 @@
 {% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
+    
+    :root {
+        --primary: #6c5ce7;
+        --primary-dark: #5649c0;
+        --secondary: #00cec9;
+        --accent: #fd79a8;
+        --success: #4CAF50;
+        --warning: #FFC107;
+        --danger: #F44336;
+        --light: #f8f9fa;
+        --dark: #2d3436;
+        --gray: #636e72;
+        --sparkle: #fffacd;
+    }
+    
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg,rgb(35, 58, 94),rgb(93, 77, 175));
+        min-height: 100vh;
+        padding: 2rem 0;
+        overflow-x: hidden;
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(108, 92, 231, 0.7); }
+        70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(108, 92, 231, 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(108, 92, 231, 0); }
+    }
+    
+    @keyframes confettiFall {
+        0% { transform: translateY(-100px) rotate(0deg) scale(1); opacity: 1; }
+        100% { transform: translateY(600px) rotate(360deg) scale(0); opacity: 0; }
+    }
+    
+    @keyframes shimmer {
+        0% { background-position: -1000px 0; }
+        100% { background-position: 1000px 0; }
+    }
+    
+    @keyframes slideInRight {
+        from { transform: translateX(100px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes glow {
+        0% { text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+        50% { text-shadow: 0 0 20px rgba(255,255,255,0.9); }
+        100% { text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+    }
+    
+    @keyframes progressBar {
+        0% { width: 0; }
+        100% { width: var(--progress-width); }
+    }
+    
+    /* Main Container */
+    .expense-container {
+        background: rgba(255, 255, 255, 0.97);
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        padding: 2.5rem;
+        animation: fadeIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        max-width: 800px;
+        margin: 0 auto;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .expense-container::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+            to bottom right,
+            rgba(108, 92, 231, 0.1) 0%,
+            rgba(0, 206, 201, 0.1) 50%,
+            rgba(253, 121, 168, 0.1) 100%
+        );
+        transform: rotate(30deg);
+        z-index: -1;
+        animation: shimmer 8s linear infinite;
+    }
+    
+    /* Header Section */
+    .header-animation {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        position: relative;
+    }
+    
+    .animated-header {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: var(--dark);
+        margin: 0;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: float 4s ease-in-out infinite, glow 3s ease-in-out infinite;
+        position: relative;
+        padding-bottom: 0.5rem;
+    }
+    
+    .animated-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        border-radius: 2px;
+        animation: slideInRight 1.2s ease-out 0.3s forwards;
+    }
+    
+    /* Quote Container */
+    .quote-container {
+        background: rgba(108, 92, 231, 0.08);
+        padding: 1.25rem;
+        border-radius: 12px;
+        margin-top: 1.5rem;
+        border-left: 4px solid var(--primary);
+        animation: fadeIn 1s ease 0.3s both;
+        transition: all 0.4s ease;
+    }
+    
+    .quote-container:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(108, 92, 231, 0.1);
+    }
+    
+    .motivational-quote {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: var(--dark);
+        margin: 0;
+        font-style: italic;
+        line-height: 1.6;
+        position: relative;
+    }
+    
+    .motivational-quote::before, .motivational-quote::after {
+        content: '"';
+        color: var(--primary);
+        opacity: 0.6;
+    }
+    
+    /* Form Styles */
+    .form-wrapper {
+        padding: 1.5rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        animation: fadeIn 0.8s ease 0.2s both;
+    }
+    
+    .form-group {
+        position: relative;
+        margin-bottom: 1.75rem;
+    }
+    
+    .floating-label input, 
+    .floating-label select, 
+    .floating-label textarea {
+        width: 100%;
+        padding: 1.25rem 1rem 0.75rem;
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: transparent;
+        z-index: 1;
+        position: relative;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    .floating-label input:focus, 
+    .floating-label select:focus, 
+    .floating-label textarea:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+    }
+    
+    .floating-label label {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        color: var(--gray);
+        transition: all 0.3s ease;
+        background: white;
+        padding: 0 0.5rem;
+        z-index: 0;
+        font-size: 0.95rem;
+    }
+    
+    .floating-label input:focus + label,
+    .floating-label input:not(:placeholder-shown) + label,
+    .floating-label select:focus + label,
+    .floating-label select:not([value=""]) + label,
+    .floating-label textarea:focus + label,
+    .floating-label textarea:not(:placeholder-shown) + label {
+        top: -0.6rem;
+        left: 0.8rem;
+        font-size: 0.8rem;
+        color: var(--primary);
+        z-index: 2;
+        font-weight: 500;
+    }
+    
+    .currency-symbol {
+        position: absolute;
+        left: 1rem;
+        top: 1.25rem;
+        font-weight: bold;
+        color: var(--primary);
+        z-index: 2;
+    }
+    
+    .floating-label input#id_amount {
+        padding-left: 2rem;
+    }
+    
+    .calendar-icon {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary);
+        cursor: pointer;
+    }
+    
+    /* Submit Button */
+    .submit-btn {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        border: none;
+        padding: 1.1rem 2rem;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        display: block;
+        width: 100%;
+        margin: 2.5rem 0 1.5rem;
+        font-weight: 600;
+        box-shadow: 0 6px 20px rgba(108, 92, 231, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(108, 92, 231, 0.4);
+        animation: pulse 1.5s infinite;
+    }
+    
+    .submit-btn:active {
+        transform: translateY(1px);
+    }
+    
+    .submit-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: 0.5s;
+    }
+    
+    .submit-btn:hover::before {
+        left: 100%;
+    }
+    
+    /* Action Links */
+    .action-links {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+    
+    .back-link {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        position: relative;
+        transition: all 0.3s ease;
+        padding: 0.5rem 0;
+    }
+    
+    .back-link:hover {
+        color: var(--primary-dark);
+    }
+    
+    .link-underline {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: var(--accent);
+        transition: width 0.3s ease;
+    }
+    
+    .back-link:hover .link-underline {
+        width: 100%;
+    }
+    
+    /* Motivational Banner */
+    .motivational-banner {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: white;
+        padding: 1.75rem;
+        border-radius: 15px;
+        margin-top: 2.5rem;
+        animation: fadeIn 0.8s ease 0.4s both;
+        box-shadow: 0 8px 25px rgba(108, 92, 231, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .motivational-banner::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            135deg,
+            rgba(255,255,255,0.1) 0%,
+            rgba(255,255,255,0) 50%,
+            rgba(255,255,255,0.1) 100%
+        );
+        transform: translateX(-100%);
+        animation: shimmer 3s infinite;
+    }
+    
+    .banner-content {
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .banner-text {
+        font-size: 1.3rem;
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+        line-height: 1.5;
+    }
+    
+    .progress-bar {
+        height: 8px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+        margin: 1.5rem 0;
+        overflow: hidden;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: white;
+        border-radius: 4px;
+        width: 0;
+        transition: width 1.5s ease 0.5s;
+    }
+    
+    .budget-tip {
+        font-size: 0.95rem;
+        opacity: 0.9;
+        margin-top: 0.75rem;
+    }
+    
+    /* Sparkle Effect */
+    .sparkle {
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        background-color: var(--sparkle);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 100;
+        animation: sparkleFall 1.5s linear forwards;
+    }
+    
+    @keyframes sparkleFall {
+        0% { transform: translateY(-20px) scale(0); opacity: 0; }
+        20% { opacity: 1; transform: translateY(0) scale(1); }
+        80% { opacity: 1; }
+        100% { transform: translateY(50px) scale(0); opacity: 0; }
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .expense-container {
+            padding: 1.5rem;
+            margin: 1rem;
+            border-radius: 15px;
+        }
+        
+        .animated-header {
+            font-size: 2rem;
+        }
+        
+        .motivational-quote {
+            font-size: 1.1rem;
+        }
+        
+        .form-wrapper {
+            padding: 1rem;
+        }
+    }
+</style>
+
 <div class="expense-container">
     <div class="header-animation">
         <h2 class="animated-header">Update Your Expense</h2>
         <div class="quote-container">
-            <p class="motivational-quote">"Every penny saved is a penny earned." — Benjamin Franklin</p>
+            <p class="motivational-quote">"A penny saved is a penny earned, but a rupee invested is a fortune created."</p>
         </div>
     </div>
 
@@ -12,9 +456,9 @@
             {% csrf_token %}
             
             <div class="form-group floating-label">
+                <span class="currency-symbol">₹</span>
                 {{ form.amount }}
                 <label for="{{ form.amount.id_for_label }}">Amount</label>
-                <span class="currency-symbol">$</span>
             </div>
             
             <div class="form-group floating-label">
@@ -35,7 +479,6 @@
             
             <button type="submit" class="submit-btn pulse-on-hover">
                 <span>Update Expense</span>
-                <div class="btn-animation"></div>
             </button>
         </form>
         
@@ -49,325 +492,14 @@
     
     <div class="motivational-banner">
         <div class="banner-content">
-            <p class="banner-text">"Financial freedom begins with mindful spending."</p>
+            <p class="banner-text">"Financial freedom begins with mindful spending. Track every rupee to build your future."</p>
             <div class="progress-bar">
                 <div class="progress-fill" data-progress="75"></div>
             </div>
-            <p class="budget-tip">You're managing your expenses well! Keep it up!</p>
+            <p class="budget-tip">You're 75% on track with your budget this month!</p>
         </div>
     </div>
 </div>
-
-<style>
-    :root {
-        --primary-color: #4361ee;
-        --secondary-color: #3f37c9;
-        --accent-color: #4cc9f0;
-        --success-color: #4ad66d;
-        --text-color: #2b2d42;
-        --light-bg: #f8f9fa;
-        --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    }
-    
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: var(--light-bg);
-        color: var(--text-color);
-        line-height: 1.6;
-        margin: 0;
-        padding: 0;
-    }
-    
-    .expense-container {
-        max-width: 800px;
-        margin: 2rem auto;
-        padding: 2rem;
-        background: white;
-        border-radius: 12px;
-        box-shadow: var(--shadow);
-        overflow: hidden;
-    }
-    
-    .header-animation {
-        text-align: center;
-        margin-bottom: 2rem;
-        position: relative;
-    }
-    
-    .animated-header {
-        font-size: 2.5rem;
-        color: var(--primary-color);
-        margin-bottom: 0.5rem;
-        position: relative;
-        display: inline-block;
-        animation: fadeInDown 0.8s ease;
-    }
-    
-    .animated-header::after {
-        content: '';
-        position: absolute;
-        bottom: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100px;
-        height: 4px;
-        background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-        border-radius: 2px;
-        animation: scaleIn 0.8s ease;
-    }
-    
-    .quote-container {
-        background: rgba(67, 97, 238, 0.1);
-        padding: 1rem;
-        border-radius: 8px;
-        margin-top: 1rem;
-        animation: fadeIn 1s ease 0.3s both;
-    }
-    
-    .motivational-quote {
-        font-style: italic;
-        color: var(--secondary-color);
-        margin: 0;
-        font-size: 1.1rem;
-    }
-    
-    .form-wrapper {
-        padding: 1.5rem;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-    }
-    
-    .form-group {
-        position: relative;
-        margin-bottom: 1.5rem;
-    }
-    
-    .floating-label input, 
-    .floating-label select, 
-    .floating-label textarea {
-        width: 100%;
-        padding: 1rem;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        background-color: transparent;
-        z-index: 1;
-        position: relative;
-    }
-    
-    .floating-label input:focus, 
-    .floating-label select:focus, 
-    .floating-label textarea:focus {
-        border-color: var(--primary-color);
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-    }
-    
-    .floating-label label {
-        position: absolute;
-        top: 1rem;
-        left: 1rem;
-        color: #6c757d;
-        transition: all 0.3s ease;
-        background: white;
-        padding: 0 0.5rem;
-        z-index: 0;
-    }
-    
-    .floating-label input:focus + label,
-    .floating-label input:not(:placeholder-shown) + label,
-    .floating-label select:focus + label,
-    .floating-label select:not([value=""]) + label,
-    .floating-label textarea:focus + label,
-    .floating-label textarea:not(:placeholder-shown) + label {
-        top: -0.6rem;
-        left: 0.8rem;
-        font-size: 0.8rem;
-        color: var(--primary-color);
-        z-index: 2;
-    }
-    
-    .currency-symbol, .calendar-icon {
-        position: absolute;
-        right: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--primary-color);
-        font-weight: bold;
-    }
-    
-    .submit-btn {
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        color: white;
-        border: none;
-        padding: 1rem 2rem;
-        font-size: 1.1rem;
-        border-radius: 50px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-        display: block;
-        width: 100%;
-        margin: 2rem 0 1rem;
-        font-weight: 600;
-        box-shadow: 0 4px 15px rgba(67, 97, 238, 0.4);
-    }
-    
-    .submit-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(67, 97, 238, 0.6);
-    }
-    
-    .submit-btn:active {
-        transform: translateY(1px);
-    }
-    
-    .btn-animation {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent);
-        transform: translateX(-100%);
-        transition: transform 0.6s ease;
-    }
-    
-    .submit-btn:hover .btn-animation {
-        transform: translateX(100%);
-    }
-    
-    .action-links {
-        text-align: center;
-        margin-top: 1.5rem;
-    }
-    
-    .back-link {
-        color: var(--primary-color);
-        text-decoration: none;
-        font-weight: 500;
-        display: inline-block;
-        position: relative;
-        transition: color 0.3s ease;
-    }
-    
-    .back-link:hover {
-        color: var(--secondary-color);
-    }
-    
-    .link-underline {
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-        width: 0;
-        height: 2px;
-        background-color: var(--accent-color);
-        transition: width 0.3s ease;
-    }
-    
-    .back-link:hover .link-underline {
-        width: 100%;
-    }
-    
-    .motivational-banner {
-        background: linear-gradient(135deg, #f72585, #b5179e);
-        color: white;
-        padding: 1.5rem;
-        border-radius: 10px;
-        margin-top: 2rem;
-        animation: fadeInUp 0.8s ease;
-    }
-    
-    .banner-content {
-        max-width: 600px;
-        margin: 0 auto;
-        text-align: center;
-    }
-    
-    .banner-text {
-        font-size: 1.2rem;
-        font-weight: 500;
-        margin-bottom: 1rem;
-    }
-    
-    .progress-bar {
-        height: 8px;
-        background: rgba(255, 255, 255, 0.3);
-        border-radius: 4px;
-        margin: 1rem 0;
-        overflow: hidden;
-    }
-    
-    .progress-fill {
-        height: 100%;
-        background: white;
-        border-radius: 4px;
-        width: 0;
-        transition: width 1.5s ease;
-    }
-    
-    .budget-tip {
-        font-size: 0.9rem;
-        opacity: 0.9;
-        margin-top: 0.5rem;
-    }
-    
-    /* Animations */
-    @keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    @keyframes scaleIn {
-        from {
-            transform: translateX(-50%) scaleX(0);
-        }
-        to {
-            transform: translateX(-50%) scaleX(1);
-        }
-    }
-    
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-    
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .expense-container {
-            margin: 1rem;
-            padding: 1rem;
-        }
-        
-        .animated-header {
-            font-size: 2rem;
-        }
-    }
-</style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -377,17 +509,29 @@
             const progress = progressFill.getAttribute('data-progress');
             setTimeout(() => {
                 progressFill.style.width = progress + '%';
-            }, 300);
+            }, 500);
         }
         
-        // Random motivational quotes
+        // Indian Rupees formatting
+        const amountField = document.getElementById('id_amount');
+        if (amountField) {
+            amountField.addEventListener('blur', function() {
+                if (this.value) {
+                    this.value = parseFloat(this.value).toFixed(2);
+                }
+            });
+        }
+        
+        // Random motivational quotes with Indian context
         const quotes = [
-            "Small expenses add up. Watch where your money goes!",
-            "Financial freedom is a journey that begins with a single step.",
-            "Budgeting isn't about restriction, it's about empowerment.",
-            "Every dollar you save today is a step toward your dreams tomorrow.",
-            "Wealth is not about having money, but about having options.",
-            "Control your expenses or they will control you."
+            "Small expenses add up. Watch where your rupees go!",
+            "Financial freedom is a journey that begins with tracking every rupee.",
+            "Budgeting isn't about restriction, it's about empowerment in India's growing economy.",
+            "Every rupee you save today is a step toward your dreams tomorrow.",
+            "Wealth is not about having money, but about having options in life.",
+            "Control your expenses or they will control you. This is true for rupees and dollars alike.",
+            "In India, the middle class becomes wealthy by saving first and spending later.",
+            "The art is not in making money, but in keeping it - especially in a volatile rupee economy."
         ];
         
         const quoteElement = document.querySelector('.motivational-quote');
@@ -414,6 +558,41 @@
                 input.parentElement.classList.add('focused');
             }
         });
+        
+        // Sparkle effect on button hover
+        const submitBtn = document.querySelector('.submit-btn');
+        if (submitBtn) {
+            submitBtn.addEventListener('mouseenter', function() {
+                createSparkles(this);
+            });
+        }
     });
+    
+    function createSparkles(element) {
+        const rect = element.getBoundingClientRect();
+        const colors = ['#6c5ce7', '#00cec9', '#fd79a8', '#fdcb6e', '#00b894', '#fffacd'];
+        
+        for (let i = 0; i < 8; i++) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            
+            const size = Math.random() * 6 + 3;
+            const left = Math.random() * rect.width;
+            const animationDuration = Math.random() * 1 + 0.5;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            sparkle.style.width = `${size}px`;
+            sparkle.style.height = `${size}px`;
+            sparkle.style.left = `${left}px`;
+            sparkle.style.backgroundColor = color;
+            sparkle.style.animationDuration = `${animationDuration}s`;
+            
+            element.appendChild(sparkle);
+            
+            setTimeout(() => {
+                sparkle.remove();
+            }, animationDuration * 1000);
+        }
+    }
 </script>
 {% endblock %}

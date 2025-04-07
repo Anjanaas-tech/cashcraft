@@ -1,11 +1,6 @@
 from django.contrib import admin
-from .models import Income, Expense, Goal
+from .models import Expense, Goal
 
-# ------------------- Income -------------------
-class IncomeAdmin(admin.ModelAdmin):
-    list_display = ('user', 'source', 'amount', 'date')
-    search_fields = ('user__username', 'source')
-    list_filter = ('source', 'date')
 
 # ------------------- Expense -------------------
 class ExpenseAdmin(admin.ModelAdmin):
@@ -20,6 +15,5 @@ class GoalAdmin(admin.ModelAdmin):
     list_filter = ('category', 'target_date')
 
 # ------------------- Register -------------------
-admin.site.register(Income, IncomeAdmin)
 admin.site.register(Expense, ExpenseAdmin)
 admin.site.register(Goal, GoalAdmin)

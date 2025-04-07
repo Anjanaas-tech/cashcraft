@@ -3,8 +3,10 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import HttpResponse
 from django.db.models import Sum
-from .models import Income, Expense, Goal
-from accounts.models import User  # Assuming your custom user model is in accounts app
+from .models import Expense, Goal
+from accounts.models import User  
+from income.models import Income
+from income.forms import IncomeForm
 
 
 @login_required
@@ -52,31 +54,6 @@ def dashboard(request):
         'user_expenses': user_expenses,
     })
 
-
-
-@login_required
-def add_income(request):
-    if request.method == "POST":
-        amount = request.POST.get('amount')
-        source = request.POST.get('source')  # Get source from the form
-        description = request.POST.get('description')
-        date = request.POST.get('date')
-
-        # Validate the input and save
-        if amount and source and description and date:
-            Income.objects.create(
-                amount=amount,
-                source=source,  # Save the source
-                description=description,
-                date=date,
-                user=request.user  # Assuming you have a user field
-            )
-            messages.success(request, "Income added successfully.")
-            return redirect('dashboard')  # Redirect to the dashboard
-        else:
-            messages.error(request, "Please fill in all fields.")
-
-    return render(request, 'dashboard/add_income.html')
 
 
 @login_required
