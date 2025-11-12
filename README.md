@@ -31,14 +31,19 @@ Tools & Libraries: Chart.js, Django Authentication System
 > Key screens from the CASH CRAFT user experience:
 
 ### 🏠 Homepage
-![Homepage](screenshot/home.jpg)  
+![Homepage](screenshot/home.jpg) 
+![Homepage](screenshot/home1.jpg)
+![Homepage](screenshot/home2.jpg)  
 ![Homepage](screenshot/register.jpg)  
 ![Homepage](screenshot/login.jpg)  
 ![Homepage](screenshot/mainpage.jpg)  
 ![Homepage](screenshot/mainpg1.jpg)  
-![Homepage](screenshot/mainpg2.jpg)  
+![Homepage](screenshot/mainpg2.jpg) 
+![Homepage](screenshot/edit_profile.jpg)
 ![Homepage](screenshot/add_income.jpg)  
-![Homepage](screenshot/income_tracker.jpg)  
+![Homepage](screenshot/add_income1.jpg)
+![Homepage](screenshot/income_tracker.jpg)
+![Homepage](screenshot/income_tracker1.jpg)  
 ![Homepage](screenshot/track_expense.jpg)  
 ![Homepage](screenshot/track_expense1.jpg)  
 ![Homepage](screenshot/savings.jpg)  
