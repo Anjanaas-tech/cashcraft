@@ -1,42 +1,48 @@
-﻿# FLYNEXT ✈️
+💰 CashCraft – Personal Budget Tracker
 
-**FLYNEXT** is a full-featured airline ticket reservation platform built to make flight booking seamless, fast, and intuitive. With user account management, real-time search, secure payments, and ticket handling, FLYNEXT brings the power of modern airline systems to the web.
+CashCraft is an intelligent personal finance management platform designed to help users take control of their income, expenses, and savings goals. Built as a full-featured budget tracker, it provides real-time insights, visual dashboards, and intuitive interfaces for effective financial planning.
 
----
+Whether you're managing daily expenses or working toward savings goals, CashCraft makes budgeting simple, smart, and visually engaging.
 
-## 🚀 Features
+🚀 Features
 
-- 🔐 User registration and login system
-- 📅 Real-time flight search with booking options
-- 🧾 E-ticket generation and print view
-- 👤 Profile and booking history dashboard
-- ✈️ Class-based flight filtering
-- 🛡️ Secure and simple ticket cancellation/resume process
-- 🧭 Beautiful landing page and responsive design
-- 🖥️ Admin dashboard for flight and user management
+💸 Income & Expense Tracking – Log and categorize all transactions effortlessly.
+📊 Visual Dashboards – Get insights into your spending with interactive charts.
+🎯 Savings Goals – Set, monitor, and achieve financial goals with progress indicators.
+📅 Budget Planner – Create personalized budgets and receive alerts for overspending.
+📈 Spending Analysis – Breakdown of categories with monthly trends and analytics.
+👤 User Accounts – Secure login, registration, and personal finance data storage.
+🧭 Responsive Dashboard – Tailored design for desktop and mobile users.
+🌙 Modern UI/UX – Clean, vibrant, and user-friendly interface built with Tailwind CSS.
 
+🛠️ Tech Stack
+
+Backend: Django (Python)
+
+Frontend: HTML, Tailwind CSS, JavaScript
+
+Database: SQLite (Django ORM)
+
+Tools & Libraries: Chart.js, Django Authentication System
 ---
 
 ## 📸 Screenshots
 
-> Key screens from the FLYNEXT user experience:
+> Key screens from the CASH CRAFT user experience:
 
 ### 🏠 Homepage
 ![Homepage](screenshot/home.jpg)  
+![Homepage](screenshot/register.jpg)  
+![Homepage](screenshot/login.jpg)  
+![Homepage](screenshot/mainpage.jpg)  
+![Homepage](screenshot/mainpg1.jpg)  
+![Homepage](screenshot/mainpg2.jpg)  
+![Homepage](screenshot/add_income.jpg)  
+![Homepage](screenshot/income_tracker.jpg)  
+![Homepage](screenshot/track_expense.jpg)  
+![Homepage](screenshot/track_expense1.jpg)  
+![Homepage](screenshot/savings.jpg)  
 
 
 
 ---
-
-## 🛠️ Getting Started
-
-To set up and run the project locally:
-
-```bash
-git clone https://github.com/yourusername/FLYNEXT.git
-cd FLYNEXT
-
-# Install dependencies and run (if using Django, for example)
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py runserver
